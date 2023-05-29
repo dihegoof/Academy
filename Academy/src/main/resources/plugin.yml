@@ -1,0 +1,6 @@
+name: Academy
+version: 0.0.1-SNAPSHOT
+description: This is a simple Bukkit Plugin
+author: Dihego
+main: com.academy.Main
+commands:
