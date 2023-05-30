@@ -17,10 +17,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
 import net.minecraft.server.v1_8_R3.NBTTagList;
 
-/**
- * Copyright (C) Zenix, all rights reserved unauthorized copying of
- * this file, via any medium is strictly prohibited proprietary and confidential
- */
 public class ItemBuilder {
 
 	private net.minecraft.server.v1_8_R3.ItemStack base;

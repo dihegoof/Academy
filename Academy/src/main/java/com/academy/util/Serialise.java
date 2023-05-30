@@ -8,9 +8,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import lombok.Getter;
+
 @SuppressWarnings("deprecation")
 public class Serialise {
 	
+	@Getter
 	static Serialise instance = new Serialise();
 	
 	//Slot;IDItem;Data;Quantidade;Encantamento1-LevelEncantamento1,Encantamento2-LevelEncantamento2
