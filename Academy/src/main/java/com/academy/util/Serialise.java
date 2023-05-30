@@ -24,7 +24,7 @@ public class Serialise {
 		if(armor) { 
 			for(ItemStack armorContents : player.getInventory().getArmorContents()) { 
 				stringBuilder.append(armorContents.getType().toString() + ";" + armorContents.getDurability());
-				if(player.getInventory().getChestplate().getEnchantments().size() > 0) { 
+				if(player.getInventory().getBoots().getEnchantments().size() > 0 || player.getInventory().getLeggings().getEnchantments().size() > 0 || player.getInventory().getChestplate().getEnchantments().size() > 0 || player.getInventory().getHelmet().getEnchantments().size() > 0) { 
 					String listEnchants = null;
 					for(Map.Entry<Enchantment, Integer> en : armorContents.getEnchantments().entrySet()) {
 						listEnchants += en.getKey().getName() + "-" + en.getValue() + ",";

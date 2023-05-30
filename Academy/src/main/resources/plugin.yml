@@ -4,3 +4,4 @@ description: This is a simple Bukkit Plugin
 author: Dihego
 main: com.academy.Main
 commands:
+   var:

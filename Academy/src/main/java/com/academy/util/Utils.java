@@ -14,9 +14,11 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -31,6 +33,33 @@ public class Utils {
 	static final String[] suffix = new String[] { "", "k", "m", "b", "t" };
 	static final int MAX_LENGTH = 4;
 
+	public void sendMessage(CommandSender player, boolean skipLine, String... messages) {
+		if(skipLine)
+			player.sendMessage("");
+		for(String message : messages)
+			player.sendMessage(message);
+		if(skipLine)
+			player.sendMessage("");
+	}
+
+	public void sendBroadcastMessage(boolean skipLine, String... messages) {
+		if(skipLine)
+			Bukkit.broadcastMessage("");
+		for(String message : messages)
+			Bukkit.broadcastMessage(message);
+		if(skipLine)
+			Bukkit.broadcastMessage("");
+	}
+
+	public void sintaxCommand(CommandSender player, String... messages) {
+		player.sendMessage("");
+		player.sendMessage("§cLista de comandos:");
+		player.sendMessage("");
+		for(String message : messages)
+			player.sendMessage(message);
+		player.sendMessage("");
+	}
+	
 	public String formatNumber(double number) {
 		String r = new DecimalFormat("##0E0").format(number);
 		r = r.replaceAll("E[0-9]", suffix[Character.getNumericValue(r.charAt(r.length() - 1)) / 3]);
