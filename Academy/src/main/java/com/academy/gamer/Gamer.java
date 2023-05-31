@@ -5,6 +5,8 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.academy.arenas.Arena;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,12 +18,14 @@ public class Gamer {
 	Player player;
 	State stateGamer;	
 	boolean online;
+	Arena arena;
 	
-	public Gamer(UUID uniqueId, Player player, State stateGamer, boolean online) {
+	public Gamer(UUID uniqueId, Player player, State stateGamer, boolean online, Arena arena) {
 		this.uniqueId = uniqueId;
 		this.player = player;
 		this.stateGamer = stateGamer;
 		this.online = online;
+		this.arena = arena;
 	}
 	
 	public boolean inventoryEmpty() { 

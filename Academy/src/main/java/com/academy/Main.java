@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.academy.arenas.ArenaManager;
 import com.academy.kit.KitManager;
 import com.academy.util.Config;
 
@@ -21,7 +22,7 @@ public class Main extends JavaPlugin {
 	@Setter
 	static Plugin plugin;
 	static boolean debug = true;
-	static String[] listeners = { "gamer.listener", "kit.inventorys.listener" };
+	static String[] listeners = { "gamer.listener", "kit.inventorys.listener", "arenas.inventorys.listener" };
 	static String[] commands = { "commands" };
 	
 	@Override
@@ -36,11 +37,13 @@ public class Main extends JavaPlugin {
 		}
 		Config.getInstance().create();
 		KitManager.getInstance().load();
+		ArenaManager.getInstance().load();
 	}
 
 	@Override
 	public void onDisable() {
 		KitManager.getInstance().save();
+		ArenaManager.getInstance().save();
 		debug("Plugin desabilitado!");
 		plugin = null;
 	}

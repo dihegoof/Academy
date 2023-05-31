@@ -15,7 +15,7 @@ public class GamerListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) { 
 		Gamer gamer = GamerManager.getInstance().get(event.getPlayer().getUniqueId().toString());
 		if(gamer == null) {
-			gamer = new Gamer(event.getPlayer().getUniqueId(), event.getPlayer(), State.ALIVE, false);
+			gamer = new Gamer(event.getPlayer().getUniqueId(), event.getPlayer(), State.ALIVE, false, null);
 			GamerManager.getInstance().add(gamer);
 		} else { 
 			gamer.setOnline(true);
@@ -28,5 +28,9 @@ public class GamerListener implements Listener {
 		if(gamer == null) return;
 		gamer.setPlayer(null);
 		gamer.setOnline(false);
+		if(gamer.getArena() != null) {
+			gamer.getArena().remove(gamer);
+			gamer.setArena(null);
+		}
 	}
 }

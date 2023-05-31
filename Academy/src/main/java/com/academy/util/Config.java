@@ -13,7 +13,7 @@ public class Config {
 	
 	@Getter
 	static Config instance = new Config();
-	static FileConfiguration kits;
+	static FileConfiguration kits, arenas;
 	
 	public void create() {
 		File kit = new File(Main.getPlugin().getDataFolder(), "kits.yml");
@@ -26,6 +26,16 @@ public class Config {
 			}
 		}
 		kits = YamlConfiguration.loadConfiguration(kit);
+		File arena = new File(Main.getPlugin().getDataFolder(), "arenas.yml");
+		if(!arena.exists()) {
+			try {
+				arena.createNewFile();
+				Main.debug("Arquivo " + arena.getName() + " criado!");
+			} catch (Exception e) {
+				Main.debug("Erro ao criar o arquivo " + arena.getName() + "!");
+			}
+		}
+		arenas = YamlConfiguration.loadConfiguration(arena);
 	}
 	
 	public void save(FileConfiguration fileConfig, String name) {
@@ -40,5 +50,9 @@ public class Config {
 	
 	public FileConfiguration getKits() {
 		return kits;
+	}
+	
+	public FileConfiguration getArenas() {
+		return arenas;
 	}
 }
