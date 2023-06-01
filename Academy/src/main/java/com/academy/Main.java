@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.academy.abilities.AbilitieManager;
 import com.academy.arenas.ArenaManager;
 import com.academy.kit.KitManager;
 import com.academy.util.Config;
@@ -38,6 +39,7 @@ public class Main extends JavaPlugin {
 		Config.getInstance().create();
 		KitManager.getInstance().load();
 		ArenaManager.getInstance().load();
+		AbilitieManager.getInstance().load();
 	}
 
 	@Override

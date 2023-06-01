@@ -61,7 +61,7 @@ public class ClassGetter {
 		}
 	}
 
-	private ArrayList<Class<?>> getClassesForPackage(JavaPlugin plugin, String pkgname) {
+	public ArrayList<Class<?>> getClassesForPackage(JavaPlugin plugin, String pkgname) {
 		final ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 		final CodeSource src = plugin.getClass().getProtectionDomain().getCodeSource();
 		if (src != null) {
@@ -72,7 +72,7 @@ public class ClassGetter {
 		return classes;
 	}
 
-	private Class<?> loadClass(final String className) {
+	private static Class<?> loadClass(final String className) {
 		try {
 			return Class.forName(className);
 		} catch (ClassNotFoundException e) {
@@ -82,7 +82,7 @@ public class ClassGetter {
 		}
 	}
 
-	private void processJarfile(final URL resource, final String pkgname, final ArrayList<Class<?>> classes) {
+	private static void processJarfile(final URL resource, final String pkgname, final ArrayList<Class<?>> classes) {
 		final String relPath = pkgname.replace('.', '/');
 		final String resPath = resource.getPath().replace("%20", " ");
 		final String jarPath = resPath.replaceFirst("[.]jar[!].*", ".jar").replaceFirst("file:", "");

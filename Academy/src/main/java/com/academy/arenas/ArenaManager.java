@@ -6,6 +6,8 @@ import java.util.List;
 import org.bukkit.Material;
 
 import com.academy.Main;
+import com.academy.abilities.Abilitie;
+import com.academy.abilities.AbilitieManager;
 import com.academy.kit.Kit;
 import com.academy.kit.KitManager;
 import com.academy.util.Config;
@@ -51,14 +53,20 @@ public class ArenaManager {
 			float pitch = Config.getInstance().getArenas().getFloat("arenas." + names + ".loc.pitch");
 			String world = Config.getInstance().getArenas().getString("arenas." + names + ".loc.world");
 			Kit kit = KitManager.getInstance().get(Config.getInstance().getArenas().getString("arenas." + names + ".kit"));
-			Arena arena = new Arena(names, icon, data, x, y, z, yaw, pitch, world, new ArrayList<>(), (kit == null ? null : kit));
+			List<Abilitie> abilities = new ArrayList<>();
+			for(String namesAbilities : Config.getInstance().getArenas().getStringList("arenas." + names + ".abilities")) { 
+				if(AbilitieManager.getInstance().get(namesAbilities) != null) { 
+					abilities.add(AbilitieManager.getInstance().get(namesAbilities));
+				}
+			}
+			Arena arena = new Arena(names, icon, data, x, y, z, yaw, pitch, world, new ArrayList<>(), (kit == null ? null : kit), abilities);
 			add(arena);
 			amount++;
 		}
 		if(amount > 0) 
 			Main.debug("Carregados " + amount + " arena(s).");
 		if(get("Spawn") == null) { 
-			add(new Arena("Spawn", Material.BED, 0, 0.0D, 90.0D, 0.0D, 0.0F, 0.0F, "world", new ArrayList<>(), null));
+			add(new Arena("Spawn", Material.BED, 0, 0.0D, 90.0D, 0.0D, 0.0F, 0.0F, "world", new ArrayList<>(), null, null));
 			Main.debug("Gerado Spawn!");
 		}
 	}

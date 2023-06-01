@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import com.academy.Main;
+import com.academy.abilities.inventorys.AbilitieInventorys;
 import com.academy.arenas.Arena;
 import com.academy.arenas.ArenaManager;
 import com.academy.arenas.inventorys.ArenaInventorys;
@@ -51,9 +52,12 @@ public class InventoryListener extends Utils implements Listener {
 					player.closeInventory();
 					return;
 				}
+				AbilitieInventorys.getInstance().listAbilities(player, arena, 1);
+				/*
 				player.closeInventory();
 				arena.prepareGamer(gamer);
 				arena.add(gamer);
+				*/
 			}
 			return;
 		}

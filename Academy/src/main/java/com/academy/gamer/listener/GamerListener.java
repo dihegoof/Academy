@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.academy.gamer.Gamer;
@@ -18,7 +19,7 @@ public class GamerListener implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent event) { 
 		Gamer gamer = GamerManager.getInstance().get(event.getPlayer().getName());
 		if(gamer == null) {
-			gamer = new Gamer(event.getPlayer().getUniqueId(), event.getPlayer().getName(), event.getPlayer(), State.ALIVE, false, true, null);
+			gamer = new Gamer(event.getPlayer().getUniqueId(), event.getPlayer().getName(), event.getPlayer(), State.ALIVE, false, true);
 			GamerManager.getInstance().add(gamer);
 		} else { 
 			gamer.setOnline(true);
@@ -39,6 +40,22 @@ public class GamerListener implements Listener {
 		}
 		gamer.setPlayer(null);
 		gamer.setOnline(false);
+		gamer.setAbilitie(null);
+		gamer.removeCooldown();
+	}
+	
+	@EventHandler
+	public void onPlayerKick(PlayerKickEvent event) { 
+		Gamer gamer = GamerManager.getInstance().get(event.getPlayer().getName());
+		if(gamer == null) return;
+		if(gamer.outSpawn()) {
+			gamer.getArena().remove(gamer);
+			gamer.setArena(null);
+		}
+		gamer.setPlayer(null);
+		gamer.setOnline(false);
+		gamer.setAbilitie(null);
+		gamer.removeCooldown();
 	}
 	
 	@EventHandler

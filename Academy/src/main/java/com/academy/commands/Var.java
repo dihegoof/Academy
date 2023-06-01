@@ -10,6 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.academy.Main;
+import com.academy.abilities.Abilitie;
+import com.academy.abilities.AbilitieManager;
 import com.academy.arenas.Arena;
 import com.academy.arenas.ArenaManager;
 import com.academy.arenas.inventorys.ArenaInventorys;
@@ -119,7 +121,7 @@ public class Var extends Utils implements CommandExecutor {
 							sendMessage(player, false, "§cJá existe uma arena com este nome!");
 							return true;
 						}
-						arena = new Arena(args[2], Material.STONE, 0, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch(), player.getLocation().getWorld().getName(), new ArrayList<>(), null);
+						arena = new Arena(args[2], Material.STONE, 0, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch(), player.getLocation().getWorld().getName(), new ArrayList<>(), null, new ArrayList<>());
 						ArenaManager.getInstance().add(arena);
 						sendMessage(player, false, "§aVocê criou a arena §7" + arena.getName() + "§a!");
 					} else if(args[1].equalsIgnoreCase("deletar")) { 
@@ -206,6 +208,39 @@ public class Var extends Utils implements CommandExecutor {
 						}
 						arena.setKit(kit);
 						sendMessage(player, false, "§aVocê definiu o kit §7" + kit.getName() + " §apara a arena §7" + arena.getName() + "§a!");
+					} else {
+						help(label, "arena", sender);
+					}
+				} else if(args.length == 5) { 
+					Arena arena = ArenaManager.getInstance().get(args[1]);
+					if(arena == null)  {
+						sendMessage(player, false, "§cNão existe uma arena com este nome!");
+						return true;
+					}
+					if(args[2].equalsIgnoreCase("habilidade")) { 
+						Abilitie abilitie = AbilitieManager.getInstance().get(args[4]);
+						if(abilitie == null) {
+							sendMessage(player, false, "§cNão existe uma habilidade com este nome!");
+							return true;
+						}
+						List<Abilitie> abilities = arena.getAbilities();
+						if(args[3].equalsIgnoreCase("add")) {
+							if(abilities.contains(abilitie)) { 
+								sendMessage(player, false, "§cEsta arena já possui esta habilidade!");
+								return true;
+							}
+							abilities.add(abilitie);
+							arena.setAbilities(abilities);
+							sendMessage(player, false, "§aVocê adicionou a habilidade §7" + abilitie.getName() + " §aà arena §7" + arena.getName() + "§a!");
+						} else if(args[3].equalsIgnoreCase("remover")) { 
+							if(!abilities.contains(abilitie)) { 
+								sendMessage(player, false, "§cEsta arena não possui esta habilidade!");
+								return true;
+							}
+							abilities.remove(abilitie);
+							arena.setAbilities(abilities);
+							sendMessage(player, false, "§aVocê removeu a habilidade §7" + abilitie.getName() + " §ada arena §7" + arena.getName() + "§a!");
+						}
 					}
 				} else { 
 					help(label, "arena", sender);
@@ -235,7 +270,8 @@ public class Var extends Utils implements CommandExecutor {
 					"§c/" + label + " arena <nome da arena> redefinirkit",
 					"§c/" + label + " arena <nome da arena> ir",
 					"§c/" + label + " arena <nome da arena> redefinirloc",
-					"§c/" + label + " arena <nome da arena> icone");
+					"§c/" + label + " arena <nome da arena> icone", 
+					"§c/" + label + " arena <nome da arena> habilidade <add, remover> <nome>");
 		} else { 
 			sintaxCommand(sender, "§c/" + label + " kit - Gerenciamento dos Kits",
 								  "§c/" + label + " arena - Gerenciamento de Arenas");

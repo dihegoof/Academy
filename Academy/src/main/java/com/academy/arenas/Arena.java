@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import com.academy.abilities.Abilitie;
 import com.academy.gamer.Gamer;
 import com.academy.kit.Kit;
 import com.academy.util.Config;
@@ -25,8 +26,9 @@ public class Arena {
 	String world;
 	List<Gamer> gamers;
 	Kit kit;
+	List<Abilitie> abilities;
 	
-	public Arena(String name, Material icon, int data, double x, double y, double z, float yaw, float pitch, String world, List<Gamer> gamers, Kit kit) {
+	public Arena(String name, Material icon, int data, double x, double y, double z, float yaw, float pitch, String world, List<Gamer> gamers, Kit kit, List<Abilitie> abilities) {
 		this.name = name;
 		this.icon = icon;
 		this.data = data;
@@ -38,6 +40,7 @@ public class Arena {
 		this.world = world;
 		this.gamers = gamers;
 		this.kit = kit;
+		this.abilities = abilities;
 	}
 	
 	public void save() {
@@ -50,6 +53,7 @@ public class Arena {
 		Config.getInstance().getArenas().set("arenas." + getName() + ".loc.pitch", getPitch());
 		Config.getInstance().getArenas().set("arenas." + getName() + ".loc.world", getWorld());
 		Config.getInstance().getArenas().set("arenas." + getName() + ".kit", getKit() == null ? "none" : getKit().getName());
+		Config.getInstance().getArenas().set("arenas." + getName() + ".abilities", getAbilities());
 		Config.getInstance().save(Config.getInstance().getArenas(), "arenas");
 	}
 	

@@ -1,12 +1,8 @@
 package com.academy.abilities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.academy.util.ItemBuilder;
 
@@ -19,40 +15,28 @@ import lombok.Setter;
 @SuppressWarnings("deprecation")
 public class Abilitie {
 	
-	static ItemBuilder ib = new ItemBuilder();
-	
 	String name;
-	String[] description;
 	boolean free, enable;
-	int cooldown, price;
-	ItemStack icon;
+	int price;
+	String cooldown;
+	ItemBuilder icon;
 	ItemStack[] itens;
 	
-	public Abilitie() {
-		this.name = getClass().getName();
-		this.enable = true;
-		this.itens = null;
+	public Abilitie(String name, boolean free, boolean enable, int price, String cooldown, ItemBuilder icon, ItemStack[] itens) {
+		this.name = name;
+		this.free = free;
+		this.enable = enable;
+		this.cooldown = cooldown;
+		this.price = price;
+		this.icon = icon;
+		this.itens = itens;
 	}
 	
 	public void setItens(ItemStack... itens) {
 		this.itens = itens;
 	}
 	
-	public void setDescription(String... description)  {
-		this.description = description;
-		ItemMeta itemMeta = this.icon.getItemMeta();
-
-		List<String> lore = new ArrayList<String>();
-
-		for (String lines : this.description) {
-			lore.add("§7" + lines);
-		}
-
-		itemMeta.setDisplayName("§7" + this.name);
-		itemMeta.setLore(lore);
-
-		this.icon.setItemMeta(itemMeta);
-	}
+	static ItemBuilder ib = new ItemBuilder();
 	
 	public static ItemStack createItemStack(String name, Material material) {
 		return ib.setMaterial(material).setName(name).getStack();
@@ -69,6 +53,4 @@ public class Abilitie {
 	public static ItemStack createItemStack(String name, Material material, int amount, Enchantment enchant, int level) {
 		return ib.setMaterial(material).setName(name).setAmount(amount).setEnchant(enchant, level).getStack();
 	}
-	
-	
 }

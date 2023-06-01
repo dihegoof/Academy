@@ -1,4 +1,4 @@
-package com.academy.arenas.inventorys;
+package com.academy.abilities.inventorys;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,15 +8,14 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
+import com.academy.abilities.Abilitie;
 import com.academy.arenas.Arena;
-import com.academy.arenas.ArenaManager;
-import com.academy.gamer.GamerManager;
 import com.academy.util.ItemBuilder;
 
 import lombok.Getter;
 
 @SuppressWarnings("deprecation")
-public class ArenaInventorys {
+public class AbilitieInventorys {
 	
 	private static List<Integer> empty = new ArrayList<>();
 	private static Integer[] slots = { 18, 27, 36, 17, 26, 35, 44 };
@@ -30,44 +29,38 @@ public class ArenaInventorys {
 	}
 	
 	@Getter
-	static ArenaInventorys instance = new ArenaInventorys();
+	static AbilitieInventorys instance = new AbilitieInventorys();
 	
-	public void listArenas(Player player, int page) {
-		Inventory inventory = Bukkit.createInventory(player, 54, "Arenas");
+	public void listAbilities(Player player, Arena arena, int page) {
+		Inventory inventory = Bukkit.createInventory(player, 54, "Habilidades");
 		ItemBuilder ib = null;
-		List<Arena> list = new ArrayList<>();
-		for(Arena ar : ArenaManager.getInstance().getArenas()) { 
-			if(!ar.getName().equals("Spawn")) { 
-				list.add(ar);
-			}
-		}
-		Arena arena = null;
+		List<Abilitie> list = arena.getAbilities();
+		Abilitie abilitie = null;
 		int start = 0;
 		start = (page > 1 ? (28 * page) - 28 : 0);
 		if(list.size() == 0) {
-			ib = new ItemBuilder().setMaterial(Material.STAINED_GLASS_PANE).setDurability(14).setName("§cNenhuma arena encontrada");
+			ib = new ItemBuilder().setMaterial(Material.STAINED_GLASS_PANE).setDurability(14).setName("§cNenhuma habilidade encontrada");
 			ib.build(inventory, 22);
 		}
 		for(int x = 0; x < inventory.getSize(); x++) {
 			try {  if(list.get(start) == null) continue; } catch (Exception e) { break; }
 			if(inventory.getItem(x) != null) continue;
 			if(empty.contains(x)) continue;
-			arena = list.get(start);
-			ib = new ItemBuilder().setMaterial(arena.getIcon()).setDurability(arena.getData()).setName("§aArena " + arena.getName()).setDescription("§fJogadores §7" + arena.getGamers().size());
+			abilitie = list.get(start);
+			ib = abilitie.getIcon();
 			ib.build(inventory, x);
 			start++;
 		}
-		if(page > 1) { 
+		if(page == 1) { 
+			ib = new ItemBuilder().setMaterial(Material.ARROW).setName("§cCancelar").setDescription("§7Clique aqui cancelar a entrada na arena!");
+			ib.build(inventory, 45);
+		} else if(page > 1) { 
 			ib = new ItemBuilder().setMaterial(Material.ARROW).setName("§cPágina " + (page - 1)).setDescription("§7Clique aqui mudar de página!");
 			ib.build(inventory, 45);
 		}
 		if(inventory.getItem(43) != null) { 
 			ib = new ItemBuilder().setMaterial(Material.ARROW).setName("§aPágina " + (page + 1)).setDescription("§7Clique aqui mudar de página!");
 			ib.build(inventory, 53);
-		}
-		if(!GamerManager.getInstance().get(player.getName()).hasArena("Spawn")) { 
-			ib = new ItemBuilder().setMaterial(Material.BED).setName("§aSpawn").setDescription("§7Clique aqui voltar ao spawn!");
-			ib.build(inventory, 49);
 		}
 		player.openInventory(inventory);
 	}
