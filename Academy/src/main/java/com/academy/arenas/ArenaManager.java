@@ -51,14 +51,18 @@ public class ArenaManager {
 			float pitch = Config.getInstance().getArenas().getFloat("arenas." + names + ".loc.pitch");
 			String world = Config.getInstance().getArenas().getString("arenas." + names + ".loc.world");
 			Kit kit = KitManager.getInstance().get(Config.getInstance().getArenas().getString("arenas." + names + ".kit"));
-			Arena arena = new Arena(names, icon, data, x, y, z, yaw, pitch, world, new ArrayList<>(), kit);
+			Arena arena = new Arena(names, icon, data, x, y, z, yaw, pitch, world, new ArrayList<>(), (kit == null ? null : kit));
 			add(arena);
 			amount++;
 		}
 		if(amount > 0) 
 			Main.debug("Carregados " + amount + " arena(s).");
+		if(get("Spawn") == null) { 
+			add(new Arena("Spawn", Material.BED, 0, 0.0D, 90.0D, 0.0D, 0.0F, 0.0F, "world", new ArrayList<>(), null));
+			Main.debug("Gerado Spawn!");
+		}
 	}
-
+	
 	public void save() {
 		for(Arena ar : arenas) { 
 			ar.save();

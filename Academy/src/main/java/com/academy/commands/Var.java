@@ -19,6 +19,7 @@ import com.academy.kit.Kit;
 import com.academy.kit.KitManager;
 import com.academy.kit.inventorys.KitInventorys;
 import com.academy.util.Base64Encode;
+import com.academy.util.ItemName;
 import com.academy.util.Utils;
 
 public class Var extends Utils implements CommandExecutor {
@@ -149,16 +150,43 @@ public class Var extends Utils implements CommandExecutor {
 							sendMessage(player, false, "§cNão existe uma arena com este nome!");
 							return true;
 						}
-						if(gamer.getArena() != null) {
+						if(gamer.outSpawn()) {
 							sendMessage(player, false, "§cVocê precisa estar no spawn para ir até uma arena!");
 							return true;
 						}
-						gamer.getPlayer().closeInventory();
-						gamer.getPlayer().getInventory().clear();
-						gamer.getPlayer().teleport(arena.getLocation());
-						arena.getKit().give(player);
+						if(gamer.getArena().getName().equals(arena.getName())) { 
+							sendMessage(player, false, "§cVocê já está nesta arena!");
+							return true;
+						}
+						arena.prepareGamer(gamer);
 						arena.add(gamer);
 						sendMessage(player, false, "§aVocê entrou na arena §7" + arena.getName() + "§a!");
+					} else if(args[2].equalsIgnoreCase("redefinirloc")) { 
+						Arena arena = ArenaManager.getInstance().get(args[1]);
+						if(arena == null) {
+							sendMessage(player, false, "§cNão existe uma arena com este nome!");
+							return true;
+						}
+						arena.setX(player.getLocation().getX());
+						arena.setY(player.getLocation().getY());
+						arena.setZ(player.getLocation().getZ());
+						arena.setYaw(player.getLocation().getYaw());
+						arena.setPitch(player.getLocation().getPitch());
+						arena.setWorld(player.getLocation().getWorld().getName());
+						sendMessage(player, false, "§aVocê redefiniu a localização da arena §7" + arena.getName() + "§a!");
+					} else if(args[2].equalsIgnoreCase("icone")) { 
+						Arena arena = ArenaManager.getInstance().get(args[1]);
+						if(arena == null) {
+							sendMessage(player, false, "§cNão existe uma arena com este nome!");
+							return true;
+						}
+						if(player.getItemInHand() != null || player.getItemInHand().getType() == Material.AIR) {
+							sendMessage(player, false, "§cVocê precisa estar com algum item em mãos!");
+							return true;
+						}
+						arena.setIcon(player.getItemInHand().getType());
+						arena.setData(player.getItemInHand().getDurability());
+						sendMessage(player, false, "§aVocê definiu o item §7" + ItemName.valueOf(arena.getIcon(), arena.getData()).getName() + " §acomo ícone da arena!");
 					}
 					return true;
 				} else if(args.length == 2) { 
@@ -205,7 +233,9 @@ public class Var extends Utils implements CommandExecutor {
 					"§c/" + label + " arena lista",
 					"§c/" + label + " arena <nome da arena> definirkit <nome do kit>",
 					"§c/" + label + " arena <nome da arena> redefinirkit",
-					"§c/" + label + " arena <nome da arena> ir");
+					"§c/" + label + " arena <nome da arena> ir",
+					"§c/" + label + " arena <nome da arena> redefinirloc",
+					"§c/" + label + " arena <nome da arena> icone");
 		} else { 
 			sintaxCommand(sender, "§c/" + label + " kit - Gerenciamento dos Kits",
 								  "§c/" + label + " arena - Gerenciamento de Arenas");

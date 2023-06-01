@@ -34,7 +34,7 @@ public class Kit {
 		Config.getInstance().save(Config.getInstance().getKits(), "kits");
 	}
 	
-	public void give(Player player) { 
+	public void give(Player player) {
 		for(String itens : getItens()) {
 			String[] split = itens.split(";");
 			player.getInventory().setItem(Integer.valueOf(split[0]), Base64Encode.getInstance().itemStackFromBase64(split[1]));

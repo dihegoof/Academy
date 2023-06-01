@@ -49,7 +49,7 @@ public class Arena {
 		Config.getInstance().getArenas().set("arenas." + getName() + ".loc.yaw", getYaw());
 		Config.getInstance().getArenas().set("arenas." + getName() + ".loc.pitch", getPitch());
 		Config.getInstance().getArenas().set("arenas." + getName() + ".loc.world", getWorld());
-		Config.getInstance().getArenas().set("arenas." + getName() + ".kit", getKit().getName());
+		Config.getInstance().getArenas().set("arenas." + getName() + ".kit", getKit() == null ? "none" : getKit().getName());
 		Config.getInstance().save(Config.getInstance().getArenas(), "arenas");
 	}
 	
@@ -66,12 +66,27 @@ public class Arena {
 	}
 	
 	public void add(Gamer gamer) { 
-		if(!getGamers().contains(gamer)) 
-			getGamers().add(gamer);
+		List<Gamer> list = getGamers();
+		if(!list.contains(gamer)) {
+			list.add(gamer);
+			setGamers(list);
+		}
 	}
 	
-	public void remove(Gamer gamer) { 
-		if(getGamers().contains(gamer)) 
-			getGamers().remove(gamer);
+	public void remove(Gamer gamer) {
+		List<Gamer> list = getGamers();
+		if(list.contains(gamer)) {
+			list.remove(gamer);
+			setGamers(list);
+		}
+	}
+	
+	public void prepareGamer(Gamer gamer) {
+		gamer.getPlayer().closeInventory();
+		gamer.getPlayer().getInventory().clear();
+		gamer.setArena(this);
+		gamer.teleportToArena();
+		if(getKit() != null) 
+			getKit().give(gamer.getPlayer());
 	}
 }

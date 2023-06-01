@@ -24,7 +24,7 @@ public class GamerManager {
 	
 	public Gamer get(String key) { 
 		for(Gamer ga : gamers) { 
-			if(ga.getPlayer().getName().equals(key) || ga.getUniqueId().equals(UUID.fromString(key)))
+			if(ga.getNickName().equals(key) || ga.getUniqueId().equals(UUID.fromString(key)))
 				return ga;
 		}
 		return null;

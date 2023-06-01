@@ -10,6 +10,7 @@ import org.bukkit.inventory.Inventory;
 
 import com.academy.arenas.Arena;
 import com.academy.arenas.ArenaManager;
+import com.academy.gamer.GamerManager;
 import com.academy.util.ItemBuilder;
 
 import lombok.Getter;
@@ -34,7 +35,12 @@ public class ArenaInventorys {
 	public void listArenas(Player player, int page) {
 		Inventory inventory = Bukkit.createInventory(player, 54, "Arenas");
 		ItemBuilder ib = null;
-		List<Arena> list = ArenaManager.getInstance().getArenas();
+		List<Arena> list = new ArrayList<>();
+		for(Arena ar : ArenaManager.getInstance().getArenas()) { 
+			if(!ar.getName().equals("Spawn")) { 
+				list.add(ar);
+			}
+		}
 		Arena arena = null;
 		int start = 0;
 		start = (page > 1 ? (28 * page) - 28 : 0);
@@ -58,6 +64,10 @@ public class ArenaInventorys {
 		if(inventory.getItem(43) != null) { 
 			ib = new ItemBuilder().setMaterial(Material.ARROW).setName("§aPágina " + (page + 1)).setDescription("§7Clique aqui mudar de página!");
 			ib.build(inventory, 53);
+		}
+		if(GamerManager.getInstance().get(player.getName()).outSpawn()) { 
+			ib = new ItemBuilder().setMaterial(Material.BED).setName("§aSpawn").setDescription("§7Clique aqui voltar ao spawn!");
+			ib.build(inventory, 49);
 		}
 		player.openInventory(inventory);
 	}
