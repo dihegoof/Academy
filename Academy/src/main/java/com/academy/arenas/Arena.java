@@ -6,10 +6,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import com.academy.abilities.Abilitie;
 import com.academy.gamer.Gamer;
 import com.academy.kit.Kit;
 import com.academy.util.Config;
+import com.academy.util.ItemBuilder;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -26,9 +26,10 @@ public class Arena {
 	String world;
 	List<Gamer> gamers;
 	Kit kit;
-	List<Abilitie> abilities;
+	List<String> abilities;
+	boolean allowAbilities, allowFeast;
 	
-	public Arena(String name, Material icon, int data, double x, double y, double z, float yaw, float pitch, String world, List<Gamer> gamers, Kit kit, List<Abilitie> abilities) {
+	public Arena(String name, Material icon, int data, double x, double y, double z, float yaw, float pitch, String world, List<Gamer> gamers, Kit kit, List<String> abilities, boolean allowAbilities, boolean allowFeast) {
 		this.name = name;
 		this.icon = icon;
 		this.data = data;
@@ -41,6 +42,8 @@ public class Arena {
 		this.gamers = gamers;
 		this.kit = kit;
 		this.abilities = abilities;
+		this.allowAbilities = allowAbilities;
+		this.allowFeast = allowFeast;
 	}
 	
 	public void save() {
@@ -54,6 +57,8 @@ public class Arena {
 		Config.getInstance().getArenas().set("arenas." + getName() + ".loc.world", getWorld());
 		Config.getInstance().getArenas().set("arenas." + getName() + ".kit", getKit() == null ? "none" : getKit().getName());
 		Config.getInstance().getArenas().set("arenas." + getName() + ".abilities", getAbilities());
+		Config.getInstance().getArenas().set("arenas." + getName() + ".allowabilities", isAllowAbilities());
+		Config.getInstance().getArenas().set("arenas." + getName() + ".allowfeast", isAllowFeast());
 		Config.getInstance().save(Config.getInstance().getArenas(), "arenas");
 	}
 	
@@ -92,5 +97,8 @@ public class Arena {
 		gamer.teleportToArena();
 		if(getKit() != null) 
 			getKit().give(gamer.getPlayer());
+		if(gamer.getAbilitie().getItem() != null && !gamer.getAbilitie().getItem().equals(Material.AIR)) { 
+			new ItemBuilder(gamer.getAbilitie().getItem()).setDurability(gamer.getAbilitie().getDataItem()).setName("§a" + gamer.getAbilitie().getName()).build(gamer.getPlayer());
+		}
 	}
 }

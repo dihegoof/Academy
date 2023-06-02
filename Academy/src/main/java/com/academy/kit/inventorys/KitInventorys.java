@@ -14,7 +14,6 @@ import com.academy.util.ItemBuilder;
 
 import lombok.Getter;
 
-@SuppressWarnings("deprecation")
 public class KitInventorys {
 
 	private static List<Integer> empty = new ArrayList<>();
@@ -39,7 +38,7 @@ public class KitInventorys {
 		int start = 0;
 		start = (page > 1 ? (28 * page) - 28 : 0);
 		if(list.size() == 0) {
-			ib = new ItemBuilder().setMaterial(Material.STAINED_GLASS_PANE).setDurability(14).setName("§cNenhum kit encontrado");
+			ib = new ItemBuilder(Material.STAINED_GLASS_PANE).setDurability(14).setName("§cNenhum kit encontrado");
 			ib.build(inventory, 22);
 		}
 		for(int x = 0; x < inventory.getSize(); x++) {
@@ -47,16 +46,16 @@ public class KitInventorys {
 			if(inventory.getItem(x) != null) continue;
 			if(empty.contains(x)) continue;
 			kit = list.get(start);
-			ib = new ItemBuilder().setMaterial(Material.PAPER).setName("§aKit §7" + kit.getName()).setDescription("§7Clique aqui para ver.");
+			ib = new ItemBuilder(Material.PAPER).setName("§aKit §7" + kit.getName()).setDescription("§7Clique aqui para ver.");
 			ib.build(inventory, x);
 			start++;
 		}
 		if(page > 1) { 
-			ib = new ItemBuilder().setMaterial(Material.ARROW).setName("§cPágina " + (page - 1)).setDescription("§7Clique aqui mudar de página!");
+			ib = new ItemBuilder(Material.ARROW).setName("§cPágina " + (page - 1)).setDescription("§7Clique aqui mudar de página!");
 			ib.build(inventory, 45);
 		}
 		if(inventory.getItem(43) != null) { 
-			ib = new ItemBuilder().setMaterial(Material.ARROW).setName("§aPágina " + (page + 1)).setDescription("§7Clique aqui mudar de página!");
+			ib = new ItemBuilder(Material.ARROW).setName("§aPágina " + (page + 1)).setDescription("§7Clique aqui mudar de página!");
 			ib.build(inventory, 53);
 		}
 		player.openInventory(inventory);

@@ -15,7 +15,6 @@ import com.academy.util.ItemBuilder;
 
 import lombok.Getter;
 
-@SuppressWarnings("deprecation")
 public class ArenaInventorys {
 	
 	private static List<Integer> empty = new ArrayList<>();
@@ -45,7 +44,7 @@ public class ArenaInventorys {
 		int start = 0;
 		start = (page > 1 ? (28 * page) - 28 : 0);
 		if(list.size() == 0) {
-			ib = new ItemBuilder().setMaterial(Material.STAINED_GLASS_PANE).setDurability(14).setName("§cNenhuma arena encontrada");
+			ib = new ItemBuilder(Material.STAINED_GLASS_PANE).setDurability(14).setName("§cNenhuma arena encontrada");
 			ib.build(inventory, 22);
 		}
 		for(int x = 0; x < inventory.getSize(); x++) {
@@ -53,20 +52,20 @@ public class ArenaInventorys {
 			if(inventory.getItem(x) != null) continue;
 			if(empty.contains(x)) continue;
 			arena = list.get(start);
-			ib = new ItemBuilder().setMaterial(arena.getIcon()).setDurability(arena.getData()).setName("§aArena " + arena.getName()).setDescription("§fJogadores §7" + arena.getGamers().size());
+			ib = new ItemBuilder(arena.getIcon()).setDurability(arena.getData()).setName("§aArena " + arena.getName()).setDescription("§fJogadores §7" + arena.getGamers().size());
 			ib.build(inventory, x);
 			start++;
 		}
 		if(page > 1) { 
-			ib = new ItemBuilder().setMaterial(Material.ARROW).setName("§cPágina " + (page - 1)).setDescription("§7Clique aqui mudar de página!");
+			ib = new ItemBuilder(Material.ARROW).setName("§cPágina " + (page - 1)).setDescription("§7Clique aqui mudar de página!");
 			ib.build(inventory, 45);
 		}
 		if(inventory.getItem(43) != null) { 
-			ib = new ItemBuilder().setMaterial(Material.ARROW).setName("§aPágina " + (page + 1)).setDescription("§7Clique aqui mudar de página!");
+			ib = new ItemBuilder(Material.ARROW).setName("§aPágina " + (page + 1)).setDescription("§7Clique aqui mudar de página!");
 			ib.build(inventory, 53);
 		}
-		if(!GamerManager.getInstance().get(player.getName()).hasArena("Spawn")) { 
-			ib = new ItemBuilder().setMaterial(Material.BED).setName("§aSpawn").setDescription("§7Clique aqui voltar ao spawn!");
+		if(GamerManager.getInstance().get(player.getName()).outSpawn()) { 
+			ib = new ItemBuilder(Material.BED).setName("§aSpawn").setDescription("§7Clique aqui voltar ao spawn!");
 			ib.build(inventory, 49);
 		}
 		player.openInventory(inventory);

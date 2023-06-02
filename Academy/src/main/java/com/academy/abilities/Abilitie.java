@@ -1,10 +1,10 @@
 package com.academy.abilities;
 
-import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemStack;
+import java.util.List;
 
-import com.academy.util.ItemBuilder;
+import org.bukkit.Material;
+
+import com.academy.util.Config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,45 +12,39 @@ import lombok.Setter;
 @Getter
 @Setter
 
-@SuppressWarnings("deprecation")
 public class Abilitie {
 	
 	String name;
 	boolean free, enable;
-	int price;
+	double price;
 	String cooldown;
-	ItemBuilder icon;
-	ItemStack[] itens;
+	List<String> description;
+	Material icon, item;
+	int dataIcon, dataItem;
 	
-	public Abilitie(String name, boolean free, boolean enable, int price, String cooldown, ItemBuilder icon, ItemStack[] itens) {
+	public Abilitie(String name, boolean free, boolean enable, double price, String cooldown, List<String> description, Material icon, Material item, int dataIcon, int dataItem) {
 		this.name = name;
 		this.free = free;
 		this.enable = enable;
-		this.cooldown = cooldown;
 		this.price = price;
+		this.cooldown = cooldown;
+		this.description = description;
 		this.icon = icon;
-		this.itens = itens;
+		this.item = item;
+		this.dataIcon = dataIcon;
+		this.dataItem = dataItem;
 	}
 	
-	public void setItens(ItemStack... itens) {
-		this.itens = itens;
-	}
-	
-	static ItemBuilder ib = new ItemBuilder();
-	
-	public static ItemStack createItemStack(String name, Material material) {
-		return ib.setMaterial(material).setName(name).getStack();
-	}
-
-	public static ItemStack createItemStack(String name, Material material, int amount) {
-		return ib.setMaterial(material).setName(name).setAmount(amount).getStack();
-	}
-
-	public static ItemStack createItemStack(String name, String[] desc, Material material, int amount) {
-		return ib.setMaterial(material).setName(name).setAmount(amount).setDescription(desc).getStack();
-	}
-
-	public static ItemStack createItemStack(String name, Material material, int amount, Enchantment enchant, int level) {
-		return ib.setMaterial(material).setName(name).setAmount(amount).setEnchant(enchant, level).getStack();
+	public void save() {
+		Config.getInstance().getAbilities().set("abilities." + getName() + ".free", isFree());
+		Config.getInstance().getAbilities().set("abilities." + getName() + ".enable", isEnable());
+		Config.getInstance().getAbilities().set("abilities." + getName() + ".cooldown", getCooldown());
+		Config.getInstance().getAbilities().set("abilities." + getName() + ".description", getDescription());
+		Config.getInstance().getAbilities().set("abilities." + getName() + ".price", getPrice());
+		Config.getInstance().getAbilities().set("abilities." + getName() + ".icon", getIcon().toString());
+		Config.getInstance().getAbilities().set("abilities." + getName() + ".dataicon", getDataIcon());
+		Config.getInstance().getAbilities().set("abilities." + getName() + ".item", getItem().toString());
+		Config.getInstance().getAbilities().set("abilities." + getName() + ".dataitem", getDataItem());
+		Config.getInstance().save(Config.getInstance().getAbilities(), "abilities");
 	}
 }

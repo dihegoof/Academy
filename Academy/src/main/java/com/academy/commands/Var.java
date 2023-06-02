@@ -121,7 +121,7 @@ public class Var extends Utils implements CommandExecutor {
 							sendMessage(player, false, "§cJá existe uma arena com este nome!");
 							return true;
 						}
-						arena = new Arena(args[2], Material.STONE, 0, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch(), player.getLocation().getWorld().getName(), new ArrayList<>(), null, new ArrayList<>());
+						arena = new Arena(args[2], Material.STONE, 0, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch(), player.getLocation().getWorld().getName(), new ArrayList<>(), null, new ArrayList<>(), false, false);
 						ArenaManager.getInstance().add(arena);
 						sendMessage(player, false, "§aVocê criou a arena §7" + arena.getName() + "§a!");
 					} else if(args[1].equalsIgnoreCase("deletar")) { 
@@ -189,6 +189,23 @@ public class Var extends Utils implements CommandExecutor {
 						arena.setIcon(player.getItemInHand().getType());
 						arena.setData(player.getItemInHand().getDurability());
 						sendMessage(player, false, "§aVocê definiu o item §7" + ItemName.valueOf(arena.getIcon(), arena.getData()).getName() + " §acomo ícone da arena!");
+					} else if(args[2].equalsIgnoreCase("feast")) { 
+						Arena arena = ArenaManager.getInstance().get(args[1]);
+						if(arena == null) {
+							sendMessage(player, false, "§cNão existe uma arena com este nome!");
+							return true;
+						}
+						arena.setAllowFeast((arena.isAllowFeast() ? false : true));
+						sendMessage(player, false, "§aVocê " + (arena.isAllowFeast() ? "ativou" : "desativou") + " o feast nesta arena!");
+					} else if(args[2].equalsIgnoreCase("habilidades")) { 
+						Arena arena = ArenaManager.getInstance().get(args[1]);
+						if(arena == null) {
+							sendMessage(player, false, "§cNão existe uma arena com este nome!");
+							return true;
+						}
+						arena.setAllowAbilities((arena.isAllowAbilities() ? false : true));
+						sendMessage(player, false, "§aVocê " + (arena.isAllowAbilities() ? "ativou" : "desativou") + " as habilidades nesta arena!");
+						arena.setAbilities(new ArrayList<>());
 					}
 					return true;
 				} else if(args.length == 2) { 
@@ -218,26 +235,30 @@ public class Var extends Utils implements CommandExecutor {
 						return true;
 					}
 					if(args[2].equalsIgnoreCase("habilidade")) { 
+						if(!arena.isAllowAbilities()) { 
+							sendMessage(player, false, "§cNesta arena não é permitido habilidades!");
+							return true;
+						}
 						Abilitie abilitie = AbilitieManager.getInstance().get(args[4]);
 						if(abilitie == null) {
 							sendMessage(player, false, "§cNão existe uma habilidade com este nome!");
 							return true;
 						}
-						List<Abilitie> abilities = arena.getAbilities();
+						List<String> abilities = arena.getAbilities();
 						if(args[3].equalsIgnoreCase("add")) {
-							if(abilities.contains(abilitie)) { 
+							if(abilities.contains(abilitie.getName())) { 
 								sendMessage(player, false, "§cEsta arena já possui esta habilidade!");
 								return true;
 							}
-							abilities.add(abilitie);
+							abilities.add(abilitie.getName());
 							arena.setAbilities(abilities);
 							sendMessage(player, false, "§aVocê adicionou a habilidade §7" + abilitie.getName() + " §aà arena §7" + arena.getName() + "§a!");
 						} else if(args[3].equalsIgnoreCase("remover")) { 
-							if(!abilities.contains(abilitie)) { 
+							if(!abilities.contains(abilitie.getName())) { 
 								sendMessage(player, false, "§cEsta arena não possui esta habilidade!");
 								return true;
 							}
-							abilities.remove(abilitie);
+							abilities.remove(abilitie.getName());
 							arena.setAbilities(abilities);
 							sendMessage(player, false, "§aVocê removeu a habilidade §7" + abilitie.getName() + " §ada arena §7" + arena.getName() + "§a!");
 						}
@@ -271,6 +292,8 @@ public class Var extends Utils implements CommandExecutor {
 					"§c/" + label + " arena <nome da arena> ir",
 					"§c/" + label + " arena <nome da arena> redefinirloc",
 					"§c/" + label + " arena <nome da arena> icone", 
+					"§c/" + label + " arena <nome da arena> feast",
+					"§c/" + label + " arena <nome da arena> habilidades",
 					"§c/" + label + " arena <nome da arena> habilidade <add, remover> <nome>");
 		} else { 
 			sintaxCommand(sender, "§c/" + label + " kit - Gerenciamento dos Kits",

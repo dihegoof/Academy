@@ -12,14 +12,16 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.academy.gamer.Gamer;
 import com.academy.gamer.GamerManager;
 import com.academy.gamer.State;
+import com.academy.util.Utils;
 
-public class GamerListener implements Listener {
+public class GamerListener extends Utils implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) { 
+		event.setJoinMessage(null);
 		Gamer gamer = GamerManager.getInstance().get(event.getPlayer().getName());
 		if(gamer == null) {
-			gamer = new Gamer(event.getPlayer().getUniqueId(), event.getPlayer().getName(), event.getPlayer(), State.ALIVE, false, true);
+			gamer = new Gamer(event.getPlayer().getUniqueId(), event.getPlayer().getName(), event.getPlayer(), State.ALIVE, true, true);
 			GamerManager.getInstance().add(gamer);
 		} else { 
 			gamer.setOnline(true);
@@ -32,16 +34,17 @@ public class GamerListener implements Listener {
 	
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) { 
+		event.setQuitMessage(null);
 		Gamer gamer = GamerManager.getInstance().get(event.getPlayer().getName());
 		if(gamer == null) return;
 		if(gamer.outSpawn()) {
 			gamer.getArena().remove(gamer);
 			gamer.setArena(null);
 		}
+		gamer.removeCooldown();
 		gamer.setPlayer(null);
 		gamer.setOnline(false);
-		gamer.setAbilitie(null);
-		gamer.removeCooldown();
+		gamer.removeAbilitie();
 	}
 	
 	@EventHandler
@@ -52,10 +55,10 @@ public class GamerListener implements Listener {
 			gamer.getArena().remove(gamer);
 			gamer.setArena(null);
 		}
+		gamer.removeCooldown();
 		gamer.setPlayer(null);
 		gamer.setOnline(false);
-		gamer.setAbilitie(null);
-		gamer.removeCooldown();
+		gamer.removeAbilitie();
 	}
 	
 	@EventHandler
@@ -63,8 +66,15 @@ public class GamerListener implements Listener {
 		if(!(event.getEntity() instanceof Player)) return;
 		Gamer gamer = GamerManager.getInstance().get(event.getEntity().getName());
 		if(gamer == null) return;
-		if(gamer.isInvencible()) 
+		if(gamer.isInvencible()) {
+			if(gamer.outSpawn()) { 
+				gamer.setInvencible(event.getDamage() >= 1.0 ? false : true);
+				event.setDamage(0.0D);
+				sendMessage(gamer.getPlayer(), false, "§7Você perdeu a proteção do spawn!");
+				return;
+			}
 			event.setCancelled(true);
+		}
 	}
 	
 	@EventHandler
@@ -72,7 +82,14 @@ public class GamerListener implements Listener {
 		if(!(event.getEntity() instanceof Player)) return;
 		if(!(event.getDamager() instanceof Player)) return;
 		Gamer gamer = GamerManager.getInstance().get(event.getEntity().getName());
-		if(gamer.isInvencible()) 
+		if(gamer.isInvencible()) {
+			if(gamer.outSpawn()) { 
+				gamer.setInvencible(event.getDamage() >= 1.0 ? false : true);
+				event.setDamage(0.0D);
+				sendMessage(gamer.getPlayer(), false, "§7Você perdeu a proteção do spawn!");
+				return;
+			}
 			event.setCancelled(true);
+		}
 	}
 }

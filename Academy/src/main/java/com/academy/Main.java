@@ -23,7 +23,13 @@ public class Main extends JavaPlugin {
 	@Setter
 	static Plugin plugin;
 	static boolean debug = true;
-	static String[] listeners = { "gamer.listener", "kit.inventorys.listener", "arenas.inventorys.listener" };
+	static String[] listeners = { 
+			"gamer.listener", 
+			"kit.inventorys.listener", 
+			"arenas.inventorys.listener", 
+			"abilities.inventorys.listener", 
+			"abilities.types", 
+			"arenas.listener" };
 	static String[] commands = { "commands" };
 	
 	@Override
@@ -46,6 +52,7 @@ public class Main extends JavaPlugin {
 	public void onDisable() {
 		KitManager.getInstance().save();
 		ArenaManager.getInstance().save();
+		AbilitieManager.getInstance().save();
 		debug("Plugin desabilitado!");
 		plugin = null;
 	}

@@ -10,7 +10,8 @@ public class GamerManager {
 	
 	@Getter
 	static GamerManager instance = new GamerManager();
-	static List<Gamer> gamers = new ArrayList<>();
+	@Getter
+	List<Gamer> gamers = new ArrayList<>();
 	
 	public void add(Gamer gamer) { 
 		if(!gamers.contains(gamer)) 

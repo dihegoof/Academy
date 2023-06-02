@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 
 import com.academy.abilities.Abilitie;
+import com.academy.abilities.AbilitieManager;
 import com.academy.arenas.Arena;
 import com.academy.arenas.ArenaManager;
 import com.academy.util.TimeCount;
@@ -28,7 +29,7 @@ public class Gamer {
 	Arena arena;
 	Abilitie abilitie;
 	
-	static HashMap<Player, Long> timeWaiting;
+	HashMap<String, Long> timeWaiting;
 	
 	public Gamer(UUID uniqueId, String nickName, Player player, State stateGamer, boolean online, boolean invencible) {
 		this.uniqueId = uniqueId;
@@ -38,7 +39,8 @@ public class Gamer {
 		this.online = online;
 		this.invencible = invencible;
 		this.arena = null;
-		this.abilitie = null;
+		this.abilitie = AbilitieManager.getInstance().get("Nenhum");
+		timeWaiting = new HashMap<>();
 	}
 	
 	public boolean inventoryEmpty() { 
@@ -91,25 +93,27 @@ public class Gamer {
 		return getAbilitie().getName().equals(name);
 	}
 	
+	public void removeAbilitie() { 
+		setAbilitie(AbilitieManager.getInstance().get("Nenhum"));
+	}
+	
 	public void addCooldown(String time) { 
-		if(!timeWaiting.containsKey(getPlayer()))
-			timeWaiting = new HashMap<>();
-		
-		timeWaiting.put(getPlayer(), TimeCount.getInstance().getTime(time));
+		timeWaiting.put(getNickName(), TimeCount.getInstance().getTime(time));
 	}
 	
 	public void removeCooldown() { 
-		if(timeWaiting.containsKey(getPlayer()))
-			timeWaiting.remove(getPlayer());
+		if(timeWaiting.containsKey(getNickName()))
+			timeWaiting.remove(getNickName());
 	}
 	
 	public boolean inCooldown() { 
-		return timeWaiting.containsKey(getPlayer()) && timeWaiting.get(getPlayer()) > System.currentTimeMillis();
+		return timeWaiting.containsKey(getNickName()) 
+				&& timeWaiting.get(getNickName()) > System.currentTimeMillis();
 	}
 	
 	public String getCooldown() { 
-		if(timeWaiting.containsKey(getPlayer())) { 
-			return Utils.getInstance().compareSimpleTime(timeWaiting.get(getPlayer()));
+		if(timeWaiting.containsKey(getNickName())) { 
+			return Utils.getInstance().compareSimpleTime(timeWaiting.get(getNickName()));
 		}
 		return "0s";
 	}

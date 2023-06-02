@@ -10,15 +10,12 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-import com.academy.abilities.Abilitie;
 import com.academy.abilities.AbilitieManager;
 import com.academy.gamer.Gamer;
 import com.academy.gamer.GamerManager;
 import com.academy.util.Utils;
 
 public class Ninja extends Utils implements Listener {
-	
-	static Abilitie abilitie = AbilitieManager.getInstance().get("Ninja");
 	
 	static HashMap<Player, Player> hit = new HashMap<>();
 	
@@ -28,7 +25,7 @@ public class Ninja extends Utils implements Listener {
 		if(!(event.getDamager() instanceof Player)) return;
 		Gamer gamer = GamerManager.getInstance().get(event.getDamager().getName());
 		if(gamer == null) return;
-		if(gamer.hasAbilitie(abilitie.getName()) && isHitable(gamer, GamerManager.getInstance().get(event.getEntity().getName()))) {
+		if(gamer.hasAbilitie("Ninja") && isHitable(gamer, GamerManager.getInstance().get(event.getEntity().getName()))) {
 			hit.put(gamer.getPlayer(), (Player)event.getEntity());
 		}
 	}
@@ -37,7 +34,7 @@ public class Ninja extends Utils implements Listener {
 	public void onPlayerToggleSneak(PlayerToggleSneakEvent event) { 
 		Gamer gamer = GamerManager.getInstance().get(event.getPlayer().getName());
 		if(gamer == null) return;
-		if(gamer.hasAbilitie(abilitie.getName())) { 
+		if(gamer.hasAbilitie("Ninja")) { 
 			if(gamer.inCooldown()) { 
 				sendMessage(null, false, "§cVocê deve aguardar " + gamer.getCooldown() + "!");
 				return;
@@ -55,7 +52,7 @@ public class Ninja extends Utils implements Listener {
 				return;
 			}
 			gamer.getPlayer().teleport(hit.get(gamer.getPlayer()));
-			gamer.addCooldown(abilitie.getCooldown());
+			gamer.addCooldown(AbilitieManager.getInstance().get("Ninja").getCooldown());
 			sendMessage(gamer.getPlayer(), false, "§aTeleportado!");
 		}
 	}

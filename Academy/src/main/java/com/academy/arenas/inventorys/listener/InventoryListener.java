@@ -52,12 +52,14 @@ public class InventoryListener extends Utils implements Listener {
 					player.closeInventory();
 					return;
 				}
-				AbilitieInventorys.getInstance().listAbilities(player, arena, 1);
-				/*
-				player.closeInventory();
-				arena.prepareGamer(gamer);
-				arena.add(gamer);
-				*/
+				if(arena.isAllowAbilities()) { 
+					AbilitieInventorys.getInstance().listAbilities(player, arena, 1);
+				} else { 
+					player.closeInventory();
+					arena.prepareGamer(gamer);
+					arena.add(gamer);
+					sendMessage(player, false, "§aVocê entrou na arena §7" + arena.getName() + "§a!");
+				}
 			}
 			return;
 		}
