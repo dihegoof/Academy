@@ -175,6 +175,9 @@ public class Var extends Utils implements CommandExecutor {
 					} else if(args[2].equalsIgnoreCase("feast")) { 
 						arena.setAllowFeast((arena.isAllowFeast() ? false : true));
 						sendMessage(player, false, "§aVocê " + (arena.isAllowFeast() ? "ativou" : "desativou") + " o feast nesta arena!");
+						if(!arena.isAllowFeast() && arena.getFeast() != null) { 
+							arena.setFeast(null);
+						}
 					} else if(args[2].equalsIgnoreCase("habilidades")) { 
 						arena.setAllowAbilities((arena.isAllowAbilities() ? false : true));
 						sendMessage(player, false, "§aVocê " + (arena.isAllowAbilities() ? "ativou" : "desativou") + " as habilidades nesta arena!");
@@ -207,11 +210,20 @@ public class Var extends Utils implements CommandExecutor {
 								}
 							}
 						}
-						Feast feast = new Feast(arena, FeastManager.getInstance().getSelectPos().get(player), itens, 301, 301, false, false);
+						Feast feast = new Feast(arena, FeastManager.getInstance().getSelectPos().get(player), itens, 301, 301, false, true);
 						FeastManager.getInstance().add(feast);
+						FeastManager.getInstance().getSelectPos().remove(player);
 						sendMessage(player, false, "§aFeast adicionado à arena §7" + arena.getName() + "§a!");
 						arena.setFeast(feast);
-						FeastManager.getInstance().getSelectPos().remove(player);
+						feast.start();
+					 } else if(args[2].equalsIgnoreCase("info")) { 
+							sendMessage(player, true, 
+									"§aArena §7" + arena.getName(),
+									"§aFeast? §7" + (arena.isAllowFeast() ? "Sim" : "Não"),
+									"   §8Feast configurado? " + (arena.getFeast() != null ? "Sim" : "Não"),
+									"§aHabilidades? §7" + (arena.isAllowAbilities() ? "Sim" : "Não"),
+									"§aKit: §7" + (arena.getKit() != null ? arena.getKit().getName() : "Nenhum")
+									);
 					 }
 					return true;
 				} else if(args.length == 2) { 
@@ -391,6 +403,7 @@ public class Var extends Utils implements CommandExecutor {
 					"§c/" + label + " arena <nome da arena> redefinirloc",
 					"§c/" + label + " arena <nome da arena> icone", 
 					"§c/" + label + " arena <nome da arena> feast",
+					"§c/" + label + " arena <nome da arena> info",
 					"§c/" + label + " arena feastpos",
 					"§c/" + label + " arena <nome da arena> feastcriar",
 					"§c/" + label + " arena <nome da arena> habilidades",

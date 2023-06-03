@@ -1,10 +1,12 @@
 package com.academy.gamer.listener;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -90,6 +92,27 @@ public class GamerListener extends Utils implements Listener {
 				return;
 			}
 			event.setCancelled(true);
+		}
+	}
+	
+	//1.0 = meio cora 
+	
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event) { 
+		if(event.getAction().toString().contains("RIGHT")) { 
+			if(event.getItem().getType().toString().contains("MUSHROOM")) { 
+				if(event.getPlayer().getHealth() == 20.0D && event.getPlayer().getFoodLevel() == 20) return;
+				if(event.getPlayer().getHealth() < 20.0D) { 
+					double life = event.getPlayer().getHealth() + 7.0D;
+					if(life > 20.0D)  
+						life = 20.0D;
+					event.getPlayer().setHealth(life);
+					event.getPlayer().getItemInHand().setType(Material.BOWL);
+				} else if(event.getPlayer().getFoodLevel() < 20) { 
+					event.getPlayer().setFoodLevel(20);
+					event.getPlayer().getItemInHand().setType(Material.BOWL);
+				}
+			}
 		}
 	}
 }

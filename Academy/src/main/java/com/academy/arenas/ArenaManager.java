@@ -69,7 +69,6 @@ public class ArenaManager {
 					List<Location> chests = new ArrayList<>();
 					List<ItemStack> itens = new ArrayList<>();
 					for(String locs : Config.getInstance().getArenas().getStringList("arenas." + names + ".feast.chests")) {
-						//x,y,z,yaw,pitch,world
 						String[] split = locs.split(";");
 						Location location = new Location(Bukkit.getWorld(split[5]), Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
 						location.setYaw(Float.valueOf(split[3]));
@@ -80,8 +79,11 @@ public class ArenaManager {
 						itens.add(Base64Encode.getInstance().itemStackFromBase64(its));
 					}
 					int timeRestart = Config.getInstance().getArenas().getInt("arenas." + names + ".feast.timerestart");
-					Feast feast = new Feast(arena, chests, itens, timeRestart, timeRestart, false, false);
+					boolean enable = Config.getInstance().getArenas().getBoolean("arenas." + names + ".feast.enable");
+					Feast feast = new Feast(arena, chests, itens, timeRestart, timeRestart, false, enable);
 					FeastManager.getInstance().add(feast);
+					arena.setFeast(feast);
+					feast.start();
 				}
 			}
 			add(arena);

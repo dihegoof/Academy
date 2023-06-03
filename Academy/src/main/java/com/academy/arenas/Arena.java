@@ -78,6 +78,9 @@ public class Arena {
 			}
 			Config.getInstance().getArenas().set("arenas." + getName() + ".feast.itens", itens);
 			Config.getInstance().getArenas().set("arenas." + getName() + ".feast.timerestart", getFeast().getTimeRestart());
+			Config.getInstance().getArenas().set("arenas." + getName() + ".feast.enable", getFeast().isEnable());
+		} else if(!isAllowFeast() && getFeast() != null) { 
+			Config.getInstance().getArenas().set("arenas." + getName() + ".feast", null);
 		}
 		Config.getInstance().save(Config.getInstance().getArenas(), "arenas");
 	}
