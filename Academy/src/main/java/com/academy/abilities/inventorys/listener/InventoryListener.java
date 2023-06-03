@@ -21,7 +21,20 @@ public class InventoryListener extends Utils implements Listener {
 	public void onInventoryClick(InventoryClickEvent event) { 
 		if(event.getClickedInventory() == null) return;
 		Player player = (Player) event.getWhoClicked();
-		if(event.getInventory().getTitle().startsWith("Habilidades para ")) {
+		if(event.getInventory().getTitle().equals("Habilidades ")) { 
+			if(event.getCurrentItem() == null) return;
+			if(!event.getCurrentItem().hasItemMeta()) return;
+			if(event.getInventory() == null) return;
+			event.setCancelled(true);
+			if(event.getCurrentItem().getItemMeta().getDisplayName().startsWith("§aPágina ")) {
+				int pageNow = Integer.parseInt(event.getCurrentItem().getItemMeta().getDisplayName().replace("§aPágina ", ""));
+				AbilitieInventorys.getInstance().listAbilities(player, null, pageNow, false);
+			} else if(event.getCurrentItem().getItemMeta().getDisplayName().startsWith("§cPágina ")) {
+				int pageNow = Integer.parseInt(event.getCurrentItem().getItemMeta().getDisplayName().replace("§cPágina ", ""));
+				AbilitieInventorys.getInstance().listAbilities(player, null, pageNow, false);
+			}
+			return;
+		} else if(event.getInventory().getTitle().startsWith("Habilidades para ")) {
 			if(event.getCurrentItem() == null) return;
 			if(!event.getCurrentItem().hasItemMeta()) return;
 			if(event.getInventory() == null) return;
@@ -30,10 +43,10 @@ public class InventoryListener extends Utils implements Listener {
 			if(arena == null) return;
 			if(event.getCurrentItem().getItemMeta().getDisplayName().startsWith("§aPágina ")) {
 				int pageNow = Integer.parseInt(event.getCurrentItem().getItemMeta().getDisplayName().replace("§aPágina ", ""));
-				AbilitieInventorys.getInstance().listAbilities(player, arena, pageNow);
+				AbilitieInventorys.getInstance().listAbilities(player, arena, pageNow, true);
 			} else if(event.getCurrentItem().getItemMeta().getDisplayName().startsWith("§cPágina ")) {
 				int pageNow = Integer.parseInt(event.getCurrentItem().getItemMeta().getDisplayName().replace("§cPágina ", ""));
-				AbilitieInventorys.getInstance().listAbilities(player, arena, pageNow);
+				AbilitieInventorys.getInstance().listAbilities(player, arena, pageNow, true);
 			} else if(event.getCurrentItem().getItemMeta().getDisplayName().equals("§cCancelar")) {
 				ArenaInventorys.getInstance().listArenas(player, 1);
 			} else { 

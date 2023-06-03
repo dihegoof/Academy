@@ -1,13 +1,17 @@
 package com.academy.arenas;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
+import com.academy.arenas.feast.Feast;
 import com.academy.gamer.Gamer;
 import com.academy.kit.Kit;
+import com.academy.util.Base64Encode;
 import com.academy.util.Config;
 import com.academy.util.ItemBuilder;
 
@@ -28,6 +32,7 @@ public class Arena {
 	Kit kit;
 	List<String> abilities;
 	boolean allowAbilities, allowFeast;
+	Feast feast;
 	
 	public Arena(String name, Material icon, int data, double x, double y, double z, float yaw, float pitch, String world, List<Gamer> gamers, Kit kit, List<String> abilities, boolean allowAbilities, boolean allowFeast) {
 		this.name = name;
@@ -59,6 +64,21 @@ public class Arena {
 		Config.getInstance().getArenas().set("arenas." + getName() + ".abilities", getAbilities());
 		Config.getInstance().getArenas().set("arenas." + getName() + ".allowabilities", isAllowAbilities());
 		Config.getInstance().getArenas().set("arenas." + getName() + ".allowfeast", isAllowFeast());
+		if(isAllowFeast() && getFeast() != null) { 
+			List<String> locations = new ArrayList<>();
+			List<String> itens = new ArrayList<>();
+			for(Location lo : getFeast().getChests()) { 
+				locations.add(serialise(lo));
+			}
+			Config.getInstance().getArenas().set("arenas." + getName() + ".feast.chests", locations);
+			for(ItemStack it : getFeast().getItens()) { 
+				if(it != null && !it.getType().equals(Material.AIR)) { 
+					itens.add(Base64Encode.getInstance().itemStackToBase64(it));
+				}
+			}
+			Config.getInstance().getArenas().set("arenas." + getName() + ".feast.itens", itens);
+			Config.getInstance().getArenas().set("arenas." + getName() + ".feast.timerestart", getFeast().getTimeRestart());
+		}
 		Config.getInstance().save(Config.getInstance().getArenas(), "arenas");
 	}
 	
@@ -100,5 +120,11 @@ public class Arena {
 		if(gamer.getAbilitie().getItem() != null && !gamer.getAbilitie().getItem().equals(Material.AIR)) { 
 			new ItemBuilder(gamer.getAbilitie().getItem()).setDurability(gamer.getAbilitie().getDataItem()).setName("§a" + gamer.getAbilitie().getName()).build(gamer.getPlayer());
 		}
+	}
+	
+	public String serialise(Location location) { 
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append(location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";" + location.getPitch() + ";" + location.getWorld().getName());
+		return stringBuilder.toString();
 	}
 }

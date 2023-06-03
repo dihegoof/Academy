@@ -31,10 +31,10 @@ public class AbilitieInventorys {
 	@Getter
 	static AbilitieInventorys instance = new AbilitieInventorys();
 	
-	public void listAbilities(Player player, Arena arena, int page) {
-		Inventory inventory = Bukkit.createInventory(player, 54, "Habilidades para " + arena.getName());
+	public void listAbilities(Player player, Arena arena, int page, boolean goToArena) {
+		Inventory inventory = Bukkit.createInventory(player, 54, "Habilidades " + (arena != null ? "para " + arena.getName() : ""));
 		ItemBuilder ib = null;
-		List<String> list = arena.getAbilities();
+		List<String> list = (arena == null ? AbilitieManager.getInstance().list() : arena.getAbilities());
 		Abilitie abilitie = null;
 		int start = 0;
 		start = (page > 1 ? (28 * page) - 28 : 0);
@@ -56,8 +56,10 @@ public class AbilitieInventorys {
 			start++;
 		}
 		if(page == 1) { 
-			ib = new ItemBuilder(Material.ARROW).setName("§cCancelar").setDescription("§7Clique aqui cancelar a entrada na arena!");
-			ib.build(inventory, 45);
+			if(goToArena) { 
+				ib = new ItemBuilder(Material.ARROW).setName("§cCancelar").setDescription("§7Clique aqui cancelar a entrada na arena!");
+				ib.build(inventory, 45);
+			}
 		} else if(page > 1) { 
 			ib = new ItemBuilder(Material.ARROW).setName("§cPágina " + (page - 1)).setDescription("§7Clique aqui mudar de página!");
 			ib.build(inventory, 45);

@@ -3,11 +3,17 @@ package com.academy.arenas;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import com.academy.Main;
+import com.academy.arenas.feast.Feast;
+import com.academy.arenas.feast.FeastManager;
 import com.academy.kit.Kit;
 import com.academy.kit.KitManager;
+import com.academy.util.Base64Encode;
 import com.academy.util.Config;
 
 import lombok.Getter;
@@ -58,6 +64,26 @@ public class ArenaManager {
 			boolean allowAbilities = Config.getInstance().getArenas().getBoolean("arenas." + names + ".allowabilities");
 			boolean allowFeast = Config.getInstance().getArenas().getBoolean("arenas." + names + ".allowfeast");
 			Arena arena = new Arena(names, icon, data, x, y, z, yaw, pitch, world, new ArrayList<>(), (kit == null ? null : kit), abilities, allowAbilities, allowFeast);
+			if(allowFeast) { 
+				if(Config.getInstance().getArenas().get("arenas." + names + ".feast.chests") != null) {
+					List<Location> chests = new ArrayList<>();
+					List<ItemStack> itens = new ArrayList<>();
+					for(String locs : Config.getInstance().getArenas().getStringList("arenas." + names + ".feast.chests")) {
+						//x,y,z,yaw,pitch,world
+						String[] split = locs.split(";");
+						Location location = new Location(Bukkit.getWorld(split[5]), Double.valueOf(split[0]), Double.valueOf(split[1]), Double.valueOf(split[2]));
+						location.setYaw(Float.valueOf(split[3]));
+						location.setPitch(Float.valueOf(split[4]));
+						chests.add(location);
+					}
+					for(String its : Config.getInstance().getArenas().getStringList("arenas." + names + ".feast.itens")) {
+						itens.add(Base64Encode.getInstance().itemStackFromBase64(its));
+					}
+					int timeRestart = Config.getInstance().getArenas().getInt("arenas." + names + ".feast.timerestart");
+					Feast feast = new Feast(arena, chests, itens, timeRestart, timeRestart, false, false);
+					FeastManager.getInstance().add(feast);
+				}
+			}
 			add(arena);
 			amount++;
 		}

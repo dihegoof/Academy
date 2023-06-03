@@ -36,6 +36,14 @@ public class AbilitieManager {
 		return null;
 	}
 	
+	public List<String> list() { 
+		List<String> list = new ArrayList<>();
+		for(Abilitie ab : abilities) { 
+			list.add(ab.getName());
+		}
+		return list;
+	}
+	
 	public void load() {
 		//name, free, enable, price, cooldown, icon, item, dataIcon, dataItem
 		int amount = 0;

@@ -33,6 +33,10 @@ public class Utils {
 	static final String[] suffix = new String[] { "", "k", "m", "b", "t" };
 	static final int MAX_LENGTH = 4;
 
+	public String formatMoney(double value) { 
+		 return "R$" + new DecimalFormat("#,###.#").format(value);
+	}
+	
 	public void sendMessage(CommandSender player, boolean skipLine, String... messages) {
 		if(skipLine)
 			player.sendMessage("");
