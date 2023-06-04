@@ -117,4 +117,16 @@ public class Gamer {
 		}
 		return "0s";
 	}
+	
+	public boolean isPlayer() { 
+		return getStateGamer().equals(State.PLAYER);
+	}
+	
+	public boolean isAdmin() { 
+		return getStateGamer().equals(State.ADMIN);
+	}
+	
+	public boolean isSpec() { 
+		return getStateGamer().equals(State.SPEC);
+	}
 }

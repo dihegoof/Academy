@@ -6,8 +6,11 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import com.academy.Main;
 import com.academy.arenas.feast.Feast;
 import com.academy.gamer.Gamer;
 import com.academy.kit.Kit;
@@ -31,10 +34,11 @@ public class Arena {
 	List<Gamer> gamers;
 	Kit kit;
 	List<String> abilities;
-	boolean allowAbilities, allowFeast;
+	boolean allowAbilities, allowFeast, build;
 	Feast feast;
+	List<Block> blocks;
 	
-	public Arena(String name, Material icon, int data, double x, double y, double z, float yaw, float pitch, String world, List<Gamer> gamers, Kit kit, List<String> abilities, boolean allowAbilities, boolean allowFeast) {
+	public Arena(String name, Material icon, int data, double x, double y, double z, float yaw, float pitch, String world, List<Gamer> gamers, Kit kit, List<String> abilities, boolean allowAbilities, boolean allowFeast, boolean build) {
 		this.name = name;
 		this.icon = icon;
 		this.data = data;
@@ -49,6 +53,9 @@ public class Arena {
 		this.abilities = abilities;
 		this.allowAbilities = allowAbilities;
 		this.allowFeast = allowFeast;
+		this.build = build;
+		if(build)
+			this.blocks = new ArrayList<>();
 	}
 	
 	public void save() {
@@ -64,6 +71,7 @@ public class Arena {
 		Config.getInstance().getArenas().set("arenas." + getName() + ".abilities", getAbilities());
 		Config.getInstance().getArenas().set("arenas." + getName() + ".allowabilities", isAllowAbilities());
 		Config.getInstance().getArenas().set("arenas." + getName() + ".allowfeast", isAllowFeast());
+		Config.getInstance().getArenas().set("arenas." + getName() + ".build", isBuild());
 		if(isAllowFeast() && getFeast() != null) { 
 			List<String> locations = new ArrayList<>();
 			List<String> itens = new ArrayList<>();
@@ -129,5 +137,23 @@ public class Arena {
 		StringBuilder stringBuilder = new StringBuilder();
 		stringBuilder.append(location.getX() + ";" + location.getY() + ";" + location.getZ() + ";" + location.getYaw() + ";" + location.getPitch() + ";" + location.getWorld().getName());
 		return stringBuilder.toString();
+	}
+	
+	public void startClear() { 
+		if(isBuild()) { 
+			new BukkitRunnable() {
+				
+				@Override
+				public void run() {
+					if(!getBlocks().isEmpty()) { 
+						for(Block bl : getBlocks()) { 
+							if(bl == null || bl.getType() == Material.AIR) continue;
+							bl.setType(Material.AIR);
+						}
+						setBlocks(new ArrayList<>());
+					}
+				}
+			}.runTaskTimer(Main.getPlugin(), 20, 300 * 20L);
+		}
 	}
 }

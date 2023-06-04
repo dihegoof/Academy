@@ -129,7 +129,7 @@ public class Var extends Utils implements CommandExecutor {
 						return true;
 					}
 					if(args[1].equalsIgnoreCase("criar")) { 
-						arena = new Arena(args[2], Material.STONE, 0, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch(), player.getLocation().getWorld().getName(), new ArrayList<>(), null, new ArrayList<>(), false, false);
+						arena = new Arena(args[2], Material.STONE, 0, player.getLocation().getX(), player.getLocation().getY(), player.getLocation().getZ(), player.getLocation().getYaw(), player.getLocation().getPitch(), player.getLocation().getWorld().getName(), new ArrayList<>(), null, new ArrayList<>(), false, false, false);
 						ArenaManager.getInstance().add(arena);
 						sendMessage(player, false, "§aVocê criou a arena §7" + arena.getName() + "§a!");
 					} else if(args[1].equalsIgnoreCase("deletar")) { 
@@ -183,6 +183,13 @@ public class Var extends Utils implements CommandExecutor {
 						sendMessage(player, false, "§aVocê " + (arena.isAllowAbilities() ? "ativou" : "desativou") + " as habilidades nesta arena!");
 						if(!arena.isAllowAbilities() && arena.getAbilities().size() > 0) { 
 							arena.setAbilities(new ArrayList<>());
+						}
+					} else if(args[2].equalsIgnoreCase("construcao")) { 
+						arena.setBuild((arena.isBuild() ? false : true));
+						sendMessage(player, false, "§aVocê " + (arena.isBuild() ? "ativou" : "desativou") + " as construções nesta arena!");
+						if(arena.isBuild()) { 
+							arena.setBlocks(new ArrayList<>());
+							arena.startClear();
 						}
 					} else if(args[2].equalsIgnoreCase("feastcriar")) { 
 						if(!FeastManager.getInstance().getSelectPos().containsKey(player)) { 
@@ -406,6 +413,7 @@ public class Var extends Utils implements CommandExecutor {
 					"§c/" + label + " arena <nome da arena> info",
 					"§c/" + label + " arena feastpos",
 					"§c/" + label + " arena <nome da arena> feastcriar",
+					"§c/" + label + " arena <nome da arena> construcao",
 					"§c/" + label + " arena <nome da arena> habilidades",
 					"§c/" + label + " arena <nome da arena> habilidade <add, remover> <nome>");
 		} else if(session.equalsIgnoreCase("habilidade")) { 

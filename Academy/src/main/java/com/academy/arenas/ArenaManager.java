@@ -46,7 +46,7 @@ public class ArenaManager {
 	public void load() {
 		int amount = 0;
 		if(Config.getInstance().getArenas().get("arenas") == null) {
-			add(new Arena("Spawn", Material.BED, 0, 0.0D, 90.0D, 0.0D, 0.0F, 0.0F, "world", new ArrayList<>(), null, null, false, false));
+			add(new Arena("Spawn", Material.BED, 0, 0.0D, 90.0D, 0.0D, 0.0F, 0.0F, "world", new ArrayList<>(), null, null, false, false, false));
 			Main.debug("Gerado spawn!");
 			return;
 		}
@@ -63,7 +63,8 @@ public class ArenaManager {
 			List<String> abilities = Config.getInstance().getArenas().getStringList("arenas." + names + ".abilities");
 			boolean allowAbilities = Config.getInstance().getArenas().getBoolean("arenas." + names + ".allowabilities");
 			boolean allowFeast = Config.getInstance().getArenas().getBoolean("arenas." + names + ".allowfeast");
-			Arena arena = new Arena(names, icon, data, x, y, z, yaw, pitch, world, new ArrayList<>(), (kit == null ? null : kit), abilities, allowAbilities, allowFeast);
+			boolean build = Config.getInstance().getArenas().getBoolean("arenas." + names + ".build");
+			Arena arena = new Arena(names, icon, data, x, y, z, yaw, pitch, world, new ArrayList<>(), (kit == null ? null : kit), abilities, allowAbilities, allowFeast, build);
 			if(allowFeast) { 
 				if(Config.getInstance().getArenas().get("arenas." + names + ".feast.chests") != null) {
 					List<Location> chests = new ArrayList<>();
@@ -86,6 +87,7 @@ public class ArenaManager {
 					feast.start();
 				}
 			}
+			arena.startClear();
 			add(arena);
 			amount++;
 		}

@@ -7,11 +7,15 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.academy.arenas.feast.FeastManager;
+import com.academy.gamer.Gamer;
+import com.academy.gamer.GamerManager;
 import com.academy.util.Utils;
 
 public class ArenaListener extends Utils implements Listener {
@@ -51,4 +55,30 @@ public class ArenaListener extends Utils implements Listener {
 		if(FeastManager.getInstance().getSelectPos().containsKey(event.getPlayer())) 
 			FeastManager.getInstance().getSelectPos().remove(event.getPlayer());
 	}
+	
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent event) { 
+		Gamer gamer = GamerManager.getInstance().get(event.getPlayer().getName());
+		if(gamer == null) return;
+		if(gamer.outSpawn() && gamer.getArena().isBuild()) { 
+			event.setCancelled(false);
+			List<Block> blocks = gamer.getArena().getBlocks();
+			blocks.add(event.getBlockPlaced());
+			gamer.getArena().setBlocks(blocks);
+			return;
+		}
+		event.setCancelled(gamer.isAdmin() ? false : true);
+	}
+	
+	@EventHandler
+	public void onBlockBreak(BlockBreakEvent event) { 
+		Gamer gamer = GamerManager.getInstance().get(event.getPlayer().getName());
+		if(gamer == null) return;
+		if(gamer.outSpawn() && gamer.getArena().isBuild() && gamer.getArena().getBlocks().contains(event.getBlock())) { 
+			event.setCancelled(false);
+			return;
+		}
+		event.setCancelled(gamer.isAdmin() ? false : true);
+	}
+	
 }
