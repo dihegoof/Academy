@@ -3,6 +3,8 @@ package com.academy.commands;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Chest;
@@ -19,13 +21,18 @@ import com.academy.abilities.AbilitieManager;
 import com.academy.abilities.inventorys.AbilitieInventorys;
 import com.academy.arenas.Arena;
 import com.academy.arenas.ArenaManager;
+import com.academy.arenas.damager.DamageManager;
+import com.academy.arenas.damager.Damager;
+import com.academy.arenas.damager.inventorys.DamageInventorys;
 import com.academy.arenas.feast.Feast;
 import com.academy.arenas.feast.FeastManager;
 import com.academy.arenas.inventorys.ArenaInventorys;
 import com.academy.gamer.Gamer;
 import com.academy.gamer.GamerManager;
+import com.academy.gamer.State;
 import com.academy.kit.Kit;
 import com.academy.kit.KitManager;
+import com.academy.kit.Type;
 import com.academy.kit.inventorys.KitInventorys;
 import com.academy.util.Base64Encode;
 import com.academy.util.ItemName;
@@ -76,7 +83,7 @@ public class Var extends Utils implements CommandExecutor {
 						}
 						player.getInventory().clear();
 						player.getInventory().setArmorContents(null);
-						kit = new Kit(args[2], itens, armor);
+						kit = new Kit(args[2], itens, armor, Type.NONE, Material.STONE, 0);
 						KitManager.getInstance().add(kit);
 						sendMessage(player, false, "§aVocê criou o kit §7" + kit.getName() + "§a!");
 					} else if(args[1].equalsIgnoreCase("deletar")) { 
@@ -88,6 +95,37 @@ public class Var extends Utils implements CommandExecutor {
 						kit.delete();
 						KitManager.getInstance().remove(kit);
 						sendMessage(player, false, "§cVocê deletou o kit §7" + args[2] + "§c!");
+					} else if(args[2].equalsIgnoreCase("info")) { 
+						Kit kit = KitManager.getInstance().get(args[1]);
+						if(kit == null) {
+							sendMessage(player, false, "§cNão existe um kit com este nome!");
+							return true;
+						}
+						sendMessage(player, true, 
+								"§aKit §7" + kit.getName(),
+								"§aTipo: §7" + (kit.getType().equals(Type.NONE) ? "Nenhum" : (kit.getType().equals(Type.COMBAT) ? "Combate" : "Resistência"))
+								);
+					} else if(args[2].equalsIgnoreCase("tipo")) { 
+						Kit kit = KitManager.getInstance().get(args[1]);
+						if(kit == null) {
+							sendMessage(player, false, "§cNão existe um kit com este nome!");
+							return true;
+						}
+						kit.setType(kit.getType().equals(Type.NONE) ? Type.COMBAT : (kit.getType().equals(Type.COMBAT) ? Type.RESISTANCE : Type.NONE));
+						sendMessage(player, false, "§aVocê alterou o kit §7" + kit.getName() + " §apara o tipo §7" + (kit.getType().equals(Type.NONE) ? "Nenhum" : (kit.getType().equals(Type.COMBAT) ? "Combate" : "Resistência")) + "§a!");
+					} else if(args[2].equalsIgnoreCase("icone")) { 
+						Kit kit = KitManager.getInstance().get(args[1]);
+						if(kit == null) {
+							sendMessage(player, false, "§cNão existe um kit com este nome!");
+							return true;
+						}
+						if(player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR) {
+							sendMessage(player, false, "§cVocê precisa estar com algum item em mãos!");
+							return true;
+						}
+						kit.setIcon(player.getItemInHand().getType());
+						kit.setData(player.getItemInHand().getDurability());
+						sendMessage(player, false, "§aVocê definiu o item §7" + ItemName.valueOf(kit.getIcon(), kit.getData()).getName() + " §acomo ícone do kit §7" + kit.getName() + "§a!");
 					}
 					return true;
 				} else if(args.length == 2) { 
@@ -327,7 +365,7 @@ public class Var extends Utils implements CommandExecutor {
 						abilitie.setFree((abilitie.isFree() ? false : true));
 						sendMessage(player, false, "§aVocê deixou a habilidade §7" + abilitie.getName() + " §acomo " + (abilitie.isFree() ? "grátis" : "não grátis") + "!");
 					} else if(args[2].equalsIgnoreCase("icone")) { 
-						if(player.getItemInHand() != null || player.getItemInHand().getType() == Material.AIR) {
+						if(player.getItemInHand() == null || player.getItemInHand().getType() == Material.AIR) {
 							sendMessage(player, false, "§cVocê precisa estar com algum item em mãos!");
 							return true;
 						}
@@ -384,6 +422,52 @@ public class Var extends Utils implements CommandExecutor {
 					help(label, "habilidade", sender);
 				}
 				break;
+			case "resistencia":
+				if(args.length == 1) { 
+					Gamer gamer = GamerManager.getInstance().get(player.getName());
+					if(gamer == null) {
+						Main.debug("Gamer nulo (" + getClass().getName() + "." + Thread.currentThread().getStackTrace()[1].getLineNumber() + ")");
+						return true;
+					}
+					Damager damager = new Damager(player, 1.0, null, null, 0, false, false);
+					DamageManager.getInstance().add(damager);
+					DamageInventorys.getInstance().create(player, damager);
+					return true;
+				}
+				break;
+			case "moderacao":
+				if(args.length == 1) { 
+					if(args[0].equalsIgnoreCase("admin")) {
+						Gamer gamer = GamerManager.getInstance().get(player.getName());
+						if(gamer == null) {
+							Main.debug("Gamer nulo (" + getClass().getName() + "." + Thread.currentThread().getStackTrace()[1].getLineNumber() + ")");
+							return true;
+						}
+						if(gamer.isAdmin()) { 
+							gamer.getPlayer().setGameMode(GameMode.SURVIVAL);
+							gamer.setStateGamer(State.PLAYER);
+							for(Player pl : Bukkit.getOnlinePlayers()) { 
+								pl.showPlayer(gamer.getPlayer()); 
+							}
+							for(Player pl : Bukkit.getOnlinePlayers()) { 
+								if(GamerManager.getInstance().get(pl.getName()).isAdmin()) { 
+									gamer.getPlayer().hidePlayer(pl);
+								}
+							}
+						} else { 
+							gamer.getPlayer().setGameMode(GameMode.CREATIVE);
+							gamer.setStateGamer(State.ADMIN);
+							for(Player pl : Bukkit.getOnlinePlayers()) { 
+								pl.getPlayer().hidePlayer(gamer.getPlayer()); 
+							}
+						}
+						sendMessage(player, false, "§aVocê " + (gamer.isAdmin() ? "entrou no" : "saiu do") + " modo admin!");
+					}
+					return true;
+				} else { 
+					help(label, "moderacao", sender);
+				}
+				break;
 			default:
 				sendMessage(player, false, "§cEste argumento não foi encontrado!");
 				break;
@@ -399,7 +483,10 @@ public class Var extends Utils implements CommandExecutor {
 			sintaxCommand(sender, 
 					"§c/" + label + " kit <criar, deletar> <nome>",
 					"§c/" + label + " kit lista",
-					"§c/" + label + " kit setar <jogador> <nome>");
+					"§c/" + label + " kit setar <jogador> <nome>",
+					"§c/" + label + " kit <nome do kit> info", 
+					"§c/" + label + " kit <nome do kit> tipo",
+					"§c/" + label + " kit <nome do kit> icone");
 		} else if(session.equalsIgnoreCase("arena")) {
 			sintaxCommand(sender, 
 					"§c/" + label + " arena <criar, deletar> <nome>",
@@ -426,10 +513,17 @@ public class Var extends Utils implements CommandExecutor {
 					"§c/" + label + " habilidade <nome da habilidade> item",
 					"§c/" + label + " habilidade <nome da habilidade> info"
 					);
+		} else if(session.equalsIgnoreCase("moderacao")) { 
+			sintaxCommand(sender, 
+					"§c/" + label + " admin",
+					"§c/" + label + " tp <jogador>",
+					"§c/" + label + " gamemode <0, 1>");
 		} else { 
-			sintaxCommand(sender, "§c/" + label + " kit - Gerenciamento dos Kits",
-								  "§c/" + label + " arena - Gerenciamento de Arenas", 
-								  "§c/" + label + " habilidade - Gerenciamento de Habilidades");
+			sintaxCommand(sender, "§c/" + label + " kit - Lista de comandos para gerenciar os kits.",
+								  "§c/" + label + " arena - Lista de comandos para gerenciar as arenas. ", 
+								  "§c/" + label + " habilidade - Lista de comandos para gerenciar as habilidades.", 
+								  "§c/" + label + " resistencia - Lista de comandos para modo resistência.", 
+								  "§c/" + label + " moderacao - Lista de comandos para moderação.");
 		}
 	}
 	

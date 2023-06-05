@@ -11,6 +11,8 @@ import com.academy.abilities.Abilitie;
 import com.academy.abilities.AbilitieManager;
 import com.academy.arenas.Arena;
 import com.academy.arenas.ArenaManager;
+import com.academy.arenas.damager.DamageManager;
+import com.academy.arenas.damager.Damager;
 import com.academy.util.TimeCount;
 import com.academy.util.Utils;
 
@@ -25,7 +27,7 @@ public class Gamer {
 	String nickName;
 	Player player;
 	State stateGamer;	
-	boolean online, invencible;
+	boolean online, invencible, damager;
 	Arena arena;
 	Abilitie abilitie;
 	
@@ -38,6 +40,7 @@ public class Gamer {
 		this.stateGamer = stateGamer;
 		this.online = online;
 		this.invencible = invencible;
+		this.damager = false;
 		this.arena = null;
 		this.abilitie = AbilitieManager.getInstance().get("Nenhum");
 		timeWaiting = new HashMap<>();
@@ -70,6 +73,15 @@ public class Gamer {
 		getPlayer().setFlying(false);
 		for(PotionEffect po : getPlayer().getActivePotionEffects()) 
 			getPlayer().getActivePotionEffects().remove(po);
+	}
+	
+	public void prepareChallenge(Damager damager) {
+		getPlayer().closeInventory();
+		getPlayer().getInventory().clear();
+		getPlayer().getInventory().setArmorContents(null);
+		if(damager.getKit() != null) 
+			damager.getKit().give(getPlayer());
+		damager.getKit().completeSoup(getPlayer());
 	}
 	
 	public void setSpawn() { 
@@ -128,5 +140,12 @@ public class Gamer {
 	
 	public boolean isSpec() { 
 		return getStateGamer().equals(State.SPEC);
+	}
+	
+	public void removeOtherConstructors() { 
+		if(DamageManager.getInstance().get(getPlayer()) != null) {
+			DamageManager.getInstance().get(getPlayer()).cancel();
+			DamageManager.getInstance().remove(DamageManager.getInstance().get(getPlayer()));
+		}
 	}
 }

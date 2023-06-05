@@ -46,7 +46,7 @@ public class KitInventorys {
 			if(inventory.getItem(x) != null) continue;
 			if(empty.contains(x)) continue;
 			kit = list.get(start);
-			ib = new ItemBuilder(Material.PAPER).setName("§aKit §7" + kit.getName()).setDescription("§7Clique aqui para ver.");
+			ib = new ItemBuilder(kit.getIcon()).setDurability(kit.getData()).setName("§aKit §7" + kit.getName()).setDescription("§7Clique aqui para ver.");
 			ib.build(inventory, x);
 			start++;
 		}

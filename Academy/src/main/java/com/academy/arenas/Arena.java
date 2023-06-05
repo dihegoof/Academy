@@ -124,6 +124,7 @@ public class Arena {
 	public void prepareGamer(Gamer gamer) {
 		gamer.getPlayer().closeInventory();
 		gamer.getPlayer().getInventory().clear();
+		gamer.getPlayer().getInventory().setArmorContents(null);
 		gamer.setArena(this);
 		gamer.teleportToArena();
 		if(getKit() != null) 

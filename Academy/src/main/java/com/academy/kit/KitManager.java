@@ -3,6 +3,8 @@ package com.academy.kit;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Material;
+
 import com.academy.Main;
 import com.academy.util.Config;
 
@@ -33,6 +35,15 @@ public class KitManager {
 		return null;
 	}
 	
+	public List<Kit> get(Type type) { 
+		List<Kit> list = new ArrayList<>();
+		for(Kit ki : kits) { 
+			if(ki.getType().equals(type))
+				list.add(ki);
+		}
+		return list;
+	}
+	
 	public void load() { 
 		int amount = 0;
 		if(Config.getInstance().getKits().get("kits") == null)
@@ -40,7 +51,10 @@ public class KitManager {
 		for(String names : Config.getInstance().getKits().getConfigurationSection("kits").getKeys(false)) {
 			List<String> itens = Config.getInstance().getKits().getStringList("kits." + names + ".itens");
 			List<String> armor = Config.getInstance().getKits().getStringList("kits." + names + ".armor");
-			Kit kit = new Kit(names, itens, armor);
+			Type type = Type.valueOf(Config.getInstance().getKits().getString("kits." + names + ".type"));
+			Material icon = Material.valueOf(Config.getInstance().getKits().getString("kits." + names + ".icon"));
+			int data = Config.getInstance().getKits().getInt("kits." + names + ".data");
+			Kit kit = new Kit(names, itens, armor, type, icon, data);
 			add(kit);
 			amount++;
 		}

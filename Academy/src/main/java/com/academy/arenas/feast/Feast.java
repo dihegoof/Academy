@@ -80,6 +80,7 @@ public class Feast extends Utils {
 			if(block == null) continue;
 			Chest chest = (Chest) block.getState();
 			for(ItemStack it : chest.getInventory()) { 
+				if(it == null || it.getType().equals(Material.AIR)) continue;
 				it.setType(Material.AIR);
 			}
 			block.setType(Material.AIR);
