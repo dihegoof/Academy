@@ -436,8 +436,8 @@ public class Var extends Utils implements CommandExecutor {
 				}
 				break;
 			case "moderacao":
-				if(args.length == 1) { 
-					if(args[0].equalsIgnoreCase("admin")) {
+				if(args.length == 2) { 
+					if(args[1].equalsIgnoreCase("admin")) {
 						Gamer gamer = GamerManager.getInstance().get(player.getName());
 						if(gamer == null) {
 							Main.debug("Gamer nulo (" + getClass().getName() + "." + Thread.currentThread().getStackTrace()[1].getLineNumber() + ")");
@@ -462,6 +462,63 @@ public class Var extends Utils implements CommandExecutor {
 							}
 						}
 						sendMessage(player, false, "§aVocê " + (gamer.isAdmin() ? "entrou no" : "saiu do") + " modo admin!");
+					}
+					return true;
+				} else if(args.length == 3) { 
+					if(args[1].equalsIgnoreCase("tp")) { 
+						Player target = Bukkit.getPlayerExact(args[2]);
+						if(target == null) {
+							sendMessage(player, false, "§cEste jogador não está online!");
+							return true;
+						}
+						player.teleport(target);
+						sendMessage(player, false, "§aTeleportado até §7" + target.getName() + "§a!");
+					} else if(args[1].equalsIgnoreCase("gamemode")) { 
+						int mode = 0;
+						try {
+							mode = Integer.parseInt(args[2]);
+						} catch (Exception e) {
+							sendMessage(player, false, "§cFormato incorreto!");
+							return true;
+						}
+						if(mode > 1) { 
+							sendMessage(player, false, "§cFormato incorreto!");
+							return true;
+						}
+						player.setGameMode(mode == 0 ? GameMode.SURVIVAL : GameMode.CREATIVE);
+						sendMessage(player, false, "§aVocê alterou seu modo de jogo para §7" + player.getGameMode().toString().toLowerCase() + "§a!");
+					}
+					return true;
+				} else if(args.length == 4) { 
+					if(args[1].equalsIgnoreCase("tp")) { 
+						Player target1 = Bukkit.getPlayerExact(args[2]);
+						if(target1 == null) {
+							sendMessage(player, false, "§cO jogador §7" + args[2] + " §cnão está online!");
+							return true;
+						}
+						Player target2 = Bukkit.getPlayerExact(args[3]);
+						if(target2 == null) {
+							sendMessage(player, false, "§cO jogador §7" + args[3] + " §cnão está online!");
+							return true;
+						}
+						target1.teleport(target2);
+						sendMessage(target1, false, "§aTeleportado até §7" + target2.getName() + "§a!");
+						sendMessage(player, false, "§aTeleportado §7" + target1.getName() + " §aaté §7" + target2.getName() + "§a!");
+					}
+					return true;
+				} else if(args.length == 5) { 
+					if(args[1].equalsIgnoreCase("tp")) { 
+						double x, y, z = 0.0;
+						try {
+							x = Double.parseDouble(args[2]);
+							y = Double.parseDouble(args[3]);
+							z = Double.parseDouble(args[4]);
+						} catch (Exception e) {
+							sendMessage(player, false, "§cFormato incorreto!");
+							return true;
+						}
+						player.teleport(new Location(player.getWorld(), x, y, z));
+						sendMessage(player, false, "§aTeleportado até §7" + x + "§a, §7" + y + "§a, §7" + z + "§a!");
 					}
 					return true;
 				} else { 
@@ -515,9 +572,11 @@ public class Var extends Utils implements CommandExecutor {
 					);
 		} else if(session.equalsIgnoreCase("moderacao")) { 
 			sintaxCommand(sender, 
-					"§c/" + label + " admin",
-					"§c/" + label + " tp <jogador>",
-					"§c/" + label + " gamemode <0, 1>");
+					"§c/" + label + " moderacao admin",
+					"§c/" + label + " moderacao tp <jogador>",
+					"§c/" + label + " moderacao tp <jogador> <alvo>",
+					"§c/" + label + " moderacao tp <x> <y> <z>",
+					"§c/" + label + " moderacao gamemode <0, 1>");
 		} else { 
 			sintaxCommand(sender, "§c/" + label + " kit - Lista de comandos para gerenciar os kits.",
 								  "§c/" + label + " arena - Lista de comandos para gerenciar as arenas. ", 

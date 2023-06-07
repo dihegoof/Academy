@@ -50,6 +50,10 @@ public class AbilitieManager {
 		if(Config.getInstance().getAbilities().get("abilities") == null) {
 			add(new Abilitie("Nenhum", true, true, 0, "0s", Arrays.asList("Nenhuma habilidade"), Material.STONE, Material.AIR, 0, 0));
 			add(new Abilitie("Ninja", true, true, 5000, "8s", Arrays.asList("Ao apertar SHIFT você ", "teleporta até o ", "último jogador hitado!"), Material.EMERALD, Material.AIR, 0, 0));
+			add(new Abilitie("Snail", true, true, 5000, "0s", Arrays.asList("Tenha 33% de chance", "de deixar seus", "oponentes mais lentos!"), Material.WEB, Material.AIR, 0, 0));
+			add(new Abilitie("Viper", true, true, 5000, "0s", Arrays.asList("Tenha 33% de chance", "de deixar seus", "oponentes envenenados!"), Material.FERMENTED_SPIDER_EYE, Material.AIR, 0, 0));
+			add(new Abilitie("Weakness", true, true, 5000, "0s", Arrays.asList("Tenha 33% de chance", "de deixar seus", "oponentes mais fracos!"), Material.POTION, Material.AIR, 0, 16392));
+			
 			Main.debug("Gerado habilidades!");
 			return;
 		}
