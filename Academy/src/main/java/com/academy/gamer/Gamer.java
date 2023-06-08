@@ -11,8 +11,8 @@ import com.academy.abilities.Abilitie;
 import com.academy.abilities.AbilitieManager;
 import com.academy.arenas.Arena;
 import com.academy.arenas.ArenaManager;
-import com.academy.arenas.damager.DamageManager;
-import com.academy.arenas.damager.Damager;
+import com.academy.minigames.damager.DamageManager;
+import com.academy.minigames.damager.Damager;
 import com.academy.util.TimeCount;
 import com.academy.util.Utils;
 
@@ -73,6 +73,10 @@ public class Gamer {
 		getPlayer().setFlying(false);
 		for(PotionEffect po : getPlayer().getActivePotionEffects()) 
 			getPlayer().getActivePotionEffects().remove(po);
+	}
+	
+	public void updateTag() { 
+		getPlayer().setPlayerListName("§7" + getNickName());
 	}
 	
 	public void prepareChallenge(Damager damager) {

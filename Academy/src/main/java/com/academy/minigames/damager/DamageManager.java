@@ -1,4 +1,4 @@
-package com.academy.arenas.damager;
+package com.academy.minigames.damager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,5 +31,4 @@ public class DamageManager {
 		}
 		return null;
 	}
-
 }

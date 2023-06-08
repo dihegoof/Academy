@@ -33,7 +33,8 @@ public class Main extends JavaPlugin {
 			"abilities.inventorys.listener", 
 			"abilities.types", 
 			"arenas.listener",
-			"arenas.damager.inventorys.listener"};
+			"minigames.damager.inventorys.listener",
+			"minigames.refill.inventorys.listener"};
 	static String[] commands = { "commands" };
 	
 	@Override

@@ -21,9 +21,6 @@ import com.academy.abilities.AbilitieManager;
 import com.academy.abilities.inventorys.AbilitieInventorys;
 import com.academy.arenas.Arena;
 import com.academy.arenas.ArenaManager;
-import com.academy.arenas.damager.DamageManager;
-import com.academy.arenas.damager.Damager;
-import com.academy.arenas.damager.inventorys.DamageInventorys;
 import com.academy.arenas.feast.Feast;
 import com.academy.arenas.feast.FeastManager;
 import com.academy.arenas.inventorys.ArenaInventorys;
@@ -34,6 +31,13 @@ import com.academy.kit.Kit;
 import com.academy.kit.KitManager;
 import com.academy.kit.Type;
 import com.academy.kit.inventorys.KitInventorys;
+import com.academy.minigames.damager.DamageManager;
+import com.academy.minigames.damager.Damager;
+import com.academy.minigames.damager.inventorys.DamageInventorys;
+import com.academy.minigames.refill.Refill;
+import com.academy.minigames.refill.RefillManager;
+import com.academy.minigames.refill.TypesRefill;
+import com.academy.minigames.refill.inventorys.RefillInventorys;
 import com.academy.util.Base64Encode;
 import com.academy.util.ItemName;
 import com.academy.util.TimeCount;
@@ -422,17 +426,33 @@ public class Var extends Utils implements CommandExecutor {
 					help(label, "habilidade", sender);
 				}
 				break;
-			case "resistencia":
-				if(args.length == 1) { 
-					Gamer gamer = GamerManager.getInstance().get(player.getName());
-					if(gamer == null) {
-						Main.debug("Gamer nulo (" + getClass().getName() + "." + Thread.currentThread().getStackTrace()[1].getLineNumber() + ")");
-						return true;
+			case "minijogos":
+				if(args.length == 2) { 
+					if(args[1].equalsIgnoreCase("resistencia")) { 
+						Gamer gamer = GamerManager.getInstance().get(player.getName());
+						if(gamer == null) {
+							Main.debug("Gamer nulo (" + getClass().getName() + "." + Thread.currentThread().getStackTrace()[1].getLineNumber() + ")");
+							return true;
+						}
+						Damager damager = new Damager(player, 1.0, null, null, 0, false, false);
+						DamageManager.getInstance().add(damager);
+						DamageInventorys.getInstance().create(player, damager);
+					} else if(args[1].equalsIgnoreCase("refill")) { 
+						Gamer gamer = GamerManager.getInstance().get(player.getName());
+						if(gamer == null) {
+							Main.debug("Gamer nulo (" + getClass().getName() + "." + Thread.currentThread().getStackTrace()[1].getLineNumber() + ")");
+							return true;
+						}
+						Refill refill = RefillManager.getInstance().get(player);
+						if(refill == null) { 
+							refill = new Refill(player, TypesRefill.LINE, 0, false);
+							RefillManager.getInstance().add(refill);
+						}
+						RefillInventorys.getInstance().create(player, refill);
 					}
-					Damager damager = new Damager(player, 1.0, null, null, 0, false, false);
-					DamageManager.getInstance().add(damager);
-					DamageInventorys.getInstance().create(player, damager);
 					return true;
+				} else { 
+					help(label, "minijogos", sender);
 				}
 				break;
 			case "moderacao":
@@ -577,11 +597,15 @@ public class Var extends Utils implements CommandExecutor {
 					"§c/" + label + " moderacao tp <jogador> <alvo>",
 					"§c/" + label + " moderacao tp <x> <y> <z>",
 					"§c/" + label + " moderacao gamemode <0, 1>");
+		} else if(session.equalsIgnoreCase("minijogos")) { 
+			sintaxCommand(sender, 
+					"§c/" + label + " minijogos resistencia",
+					"§c/" + label + " minijogos refill");
 		} else { 
 			sintaxCommand(sender, "§c/" + label + " kit - Lista de comandos para gerenciar os kits.",
 								  "§c/" + label + " arena - Lista de comandos para gerenciar as arenas. ", 
 								  "§c/" + label + " habilidade - Lista de comandos para gerenciar as habilidades.", 
-								  "§c/" + label + " resistencia - Lista de comandos para modo resistência.", 
+								  "§c/" + label + " minijogos - Lista de comandos para jogar mini-jogos para treino.", 
 								  "§c/" + label + " moderacao - Lista de comandos para moderação.");
 		}
 	}

@@ -1,4 +1,4 @@
-package com.academy.arenas.damager;
+package com.academy.minigames.damager;
 
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;

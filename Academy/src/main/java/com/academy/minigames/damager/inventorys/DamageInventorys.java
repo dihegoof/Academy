@@ -1,4 +1,4 @@
-package com.academy.arenas.damager.inventorys;
+package com.academy.minigames.damager.inventorys;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +8,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-import com.academy.arenas.damager.Damager;
 import com.academy.kit.Kit;
 import com.academy.kit.KitManager;
 import com.academy.kit.Type;
+import com.academy.minigames.damager.Damager;
 import com.academy.util.ItemBuilder;
 
 import lombok.Getter;
@@ -35,7 +35,7 @@ public class DamageInventorys {
 	public void create(Player player, Damager damager) { 
 		Inventory inventory = Bukkit.createInventory(player, 27, "Personalização");
 		ItemBuilder ib = null;
-		ib = new ItemBuilder(Material.STAINED_GLASS_PANE).setDurability(14).setName("§aCancelar").setDescription("§7Clique aqui para cancelar!");
+		ib = new ItemBuilder(Material.STAINED_GLASS_PANE).setDurability(14).setName("§cCancelar").setDescription("§7Clique aqui para cancelar!");
 		ib.build(inventory, 10);
 		ib = new ItemBuilder(Material.DIAMOND_SWORD).setName("§aDano").setDescription("§7" + damager.getDamage() + " §7corações", "", "§7Clique aqui para alterar os corações por segundo!");
 		ib.build(inventory, 12);

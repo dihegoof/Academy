@@ -21,10 +21,10 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.academy.Main;
-import com.academy.arenas.damager.DamageManager;
 import com.academy.gamer.Gamer;
 import com.academy.gamer.GamerManager;
 import com.academy.gamer.State;
+import com.academy.minigames.damager.DamageManager;
 import com.academy.util.Utils;
 
 public class GamerListener extends Utils implements Listener {
@@ -32,6 +32,9 @@ public class GamerListener extends Utils implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) { 
 		event.setJoinMessage(null);
+		for(int i = 0; i < 120; i++)
+			sendMessage(event.getPlayer(), false, "");
+		sendMessage(event.getPlayer(), false, "§aSeja bem-vindo ao servidor de treino!");
 		Gamer gamer = GamerManager.getInstance().get(event.getPlayer().getName());
 		if(gamer == null) {
 			gamer = new Gamer(event.getPlayer().getUniqueId(), event.getPlayer().getName(), event.getPlayer(), State.PLAYER, true, true);
@@ -43,6 +46,7 @@ public class GamerListener extends Utils implements Listener {
 		gamer.preparePlayer();
 		gamer.setSpawn();
 		gamer.setInvencible(true);
+		gamer.updateTag();
 		for(Player pl : Bukkit.getOnlinePlayers()) { 
 			if(GamerManager.getInstance().get(pl.getName()).isAdmin()) { 
 				gamer.getPlayer().hidePlayer(pl);
@@ -190,7 +194,7 @@ public class GamerListener extends Utils implements Listener {
 			
 			@Override
 			public void run() {
-				Bukkit.getWorld("world").playEffect(event.getItemDrop().getLocation(), Effect.SMOKE, 5.0F);
+				Bukkit.getWorld("world").playEffect(event.getItemDrop().getLocation(), Effect.SMOKE, 1);
 				event.getItemDrop().remove();
 			}
 		}.runTaskLater(Main.getPlugin(), 20L * 5);

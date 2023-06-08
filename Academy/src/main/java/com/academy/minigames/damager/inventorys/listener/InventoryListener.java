@@ -1,18 +1,17 @@
-package com.academy.arenas.damager.inventorys.listener;
+package com.academy.minigames.damager.inventorys.listener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 
-import com.academy.arenas.damager.DamageManager;
-import com.academy.arenas.damager.Damager;
-import com.academy.arenas.damager.inventorys.DamageInventorys;
 import com.academy.gamer.Gamer;
 import com.academy.gamer.GamerManager;
 import com.academy.kit.KitManager;
+import com.academy.minigames.damager.DamageManager;
+import com.academy.minigames.damager.Damager;
+import com.academy.minigames.damager.inventorys.DamageInventorys;
 import com.academy.util.Utils;
 
 public class InventoryListener extends Utils implements Listener {
@@ -56,7 +55,7 @@ public class InventoryListener extends Utils implements Listener {
 						player.hidePlayer(pl);
 					}
 				}
-			} else if(event.getCurrentItem().getItemMeta().getDisplayName().equals("§aCancelar")) {
+			} else if(event.getCurrentItem().getItemMeta().getDisplayName().equals("§cCancelar")) {
 				DamageManager.getInstance().remove(damager);
 				player.closeInventory();
 			} else {
@@ -84,10 +83,5 @@ public class InventoryListener extends Utils implements Listener {
 			}
 			return;
 		}
-	}
-	
-	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent event) { 
-		
 	}
 }
